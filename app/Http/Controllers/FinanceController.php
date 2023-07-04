@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\transaksiBeli;
+use App\Models\Mobil;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -95,11 +96,19 @@ class FinanceController extends Controller
         return response(['status'=>'success', 'res'=>$req->all()]);      
     }
 
-    public function BayarBeli(Request $req) {
+    public function BayarBeli(Request $req) {        
         $q = transaksiBeli::find($req->id);
+
+        $id_mobil = $q->id_mobil;
 
         $q->node = 3;
         $q->save();
+
+        $c = Mobil::find($id_mobil);
+
+        $c->state = 1;
+        $c->save();
+        
 
         return redirect()->route('pembayaranB');
     }

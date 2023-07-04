@@ -5,6 +5,7 @@ use App\Http\Controllers\pageController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\JBController;
+use App\Http\Controllers\OPSController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -40,7 +41,12 @@ Route::group(['middleware' => 'auth'], function () {
 
 });
 
-Route::group(['middleware' => 'jbmid'], function () {
+Route::group(['middleware' => ['manager','admin']], function () {
+    Route::get('mobil', [pageController::class, 'ListMobil'])->name('inventory');
+});
+
+Route::group(['middleware' => ['manager','admin','sales']], function () {
+    
     Route::get('/spk', [pageController::class, 'SPK'])->name('spk');
 
     Route::get('/jual', [pageController::class, 'Jual'])->name('jual');
@@ -78,4 +84,20 @@ Route::group(['middleware' => 'finance'], function () {
 
 Route::group(['middleware' => 'sales'], function () {});
 
-Route::group(['middleware' => 'ops'], function () {});
+Route::group(['middleware' => 'ops'], function () {
+    Route::get('/periksa/masuk', [pageController::class, 'PeriksaMasuk'])->name('periksaMasuk');
+    
+    Route::get('/periksa/keluar', [pageController::class, 'PeriksaKeluar'])->name('periksaKeluar');
+
+    Route::get('/pemeriksaan', [pageController::class, 'Pemeriksaan'])->name('pemeriksaan');
+
+    Route::POST('/periksa/ambil', [OPSController::class, 'Ambil'])->name('OPSambil');
+
+    Route::POST('/periksa/start', [OPSController::class, 'StartPeriksa'])->name('startPeriksa');
+
+    Route::POST('/periksa', [pageController::class, 'Periksa'])->name('periksa');
+});
+
+Route::get('/cekcek', function(){
+    return view('checking');
+});

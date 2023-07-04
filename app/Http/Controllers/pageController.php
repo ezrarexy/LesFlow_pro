@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DetailQc;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\SPK;
 use App\Models\Merk;
 use App\Models\Jenis;
+use App\Models\Mobil;
+use App\Models\PendukungDetailQc;
+use App\Models\Qc;
 use App\Models\transaksiBeli;
 use App\Models\transaksiJual;
 
@@ -115,6 +119,66 @@ class pageController extends Controller
         return view('layouts.keuangan.pembayaran')->with('pej',$pej)->with('notif',$notif)->with('data',$data);
     }
 
+    public function ListMobil() {
+        $pej = $this->PageObj("List Mobil","mobil");
+        $notif = $this->UserNotif();
+
+
+        return view('listMobil')->with('pej',$pej,)->with('notif',$notif);
+    }
+
+    public function PeriksaMasuk() {
+        $pej = $this->PageObj("Periksa Mobil Masuk","/periksa/masuk");
+        $notif = $this->UserNotif();
+
+        $mobil = Mobil::select('mobils.*','merks.nama as merk')->join('merks','mobils.id_merk','=','merks.id')->where('state','=','1')->get();
+
+        return view('layouts.ops.periksaMasuk')->with('pej',$pej)->with('notif',$notif)->with('mobil',$mobil);
+    }
+
+    public function PeriksaKeluar() {
+        $pej = $this->PageObj("Periksa Mobil Keluar","/periksa/keluar");
+        $notif = $this->UserNotif();
+
+
+        return view('layouts.ops.periksaKeluar')->with('pej',$pej)->with('notif',$notif);
+    }
+
+    public function Pemeriksaan() {
+        $pej = $this->PageObj("Pemeriksaan Mobil","/pemeriksaan");
+        $notif = $this->UserNotif();
+
+        $mobil = Qc::select(
+            'qcs.*',
+            'mobils.nama',
+            'merks.nama as merk',
+            'mobils.tahun',
+            'mobils.nomor_polisi',
+            'mobils.kondisi'
+            )->join('mobils','qcs.id_mobil','=','mobils.id')
+            ->join('merks','mobils.id_merk','=','merks.id')
+            ->where('id_pdi','=',Auth::user()->id)
+            ->orderBy('updated_at', 'desc')->get();        
+
+        return view('layouts.ops.pemeriksaan')->with('pej',$pej)->with('notif',$notif)->with('mobil',$mobil);
+    }
+
+    public function Periksa(Request $req) {
+        $notif = $this->UserNotif();
+
+        $qc = Qc::find($req->id);
+        $dqc = DetailQc::where('id_qc','=',$req->id)->first();
+        $pdqc = PendukungDetailQc::where('id_qc','=',$req->id)->first();
+        $mobil = Mobil::select('mobils.*','merks.nama as merk','jenis.nama as jenis')
+        ->join('merks','mobils.id_merk','=','merks.id')
+        ->join('jenis','mobils.id_jenis','=','jenis.id')
+        ->where('mobils.id',$qc->id_mobil)->first();
+
+        $pej = $this->PageObj("Pemeriksaan ". $mobil['merk'] ." ". $mobil['nama'],"/pemeriksaan");
+
+        return view('layouts.ops.periksa')->with('pej',$pej)->with('notif',$notif)->with('qc',$qc)->with('dqc',$dqc)->with('pdqc',$pdqc)->with('mobil',$mobil);
+    }
+
     //================================ Mengatur Notifikasi untuk masing masing user ======================================
     public function UserNotif() {
         $notif = app()->make('stdClass');
@@ -139,7 +203,7 @@ class pageController extends Controller
                 # code...
                 break;
             case 6:
-                # code...
+                $notif = $this->notifOPS();
                 break;
         }
 
@@ -221,5 +285,52 @@ class pageController extends Controller
         }
 
         return $not;        
+    }
+
+    public function notifOPS() {
+        $n = Mobil::select('updated_at')->where('state','=','1')->orderBy('updated_at', 'desc')->get();
+        $o = Mobil::select('updated_at')->where('state','=','7')->orderBy('updated_at', 'desc')->get();
+
+        $not = app()->make('stdClass');
+
+        if (count($n) > 0 || count($o) > 0) {
+            $not->status = true;
+
+            $notif = [];
+
+            if ( count($n) > 0 && count($o) > 0) {
+                if ($n[0]->updated_at->gt($o[0]->updated_at)) {
+                    $notif[0][0] = "masuk";
+                    $notif[0][1] = Mobil::where('state','=','1')->orderBy('updated_at', 'desc')->get();
+                    $notif[1][0] = "keluar";
+                    $notif[1][1] = Mobil::where('state','=','7')->orderBy('updated_at', 'desc')->get();
+                } else {
+                    $notif[0][0] = "keluar";
+                    $notif[0][1] = Mobil::where('state','=','7')->orderBy('updated_at', 'desc')->get();
+                    $notif[1][0] = "masuk";
+                    $notif[1][1] = Mobil::where('state','=','1')->orderBy('updated_at', 'desc')->get();
+                }
+            } else {
+                if (count($n) > 0) {
+                    $notif[0][0] = "masuk";
+                    $notif[0][1] = Mobil::where('state','=','1')->get();
+                }
+
+                if (count($o) > 0) {
+                    $notif[0][0] = "keluar";
+                    $notif[0][1] = Mobil::where('state','=','7')->get();
+                }
+            }
+
+            $not->notif = $notif;
+
+        } else {
+            $not->status = false;
+            $not->notif = "";
+        }
+
+        $not->pemeriksaan = Qc::where('id_pdi','=',Auth::user()->id)->where('selesai','=',0)->count();
+
+        return $not;
     }
 }
