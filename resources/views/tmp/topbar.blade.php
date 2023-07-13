@@ -1,7 +1,7 @@
 <main class="main-content border-radius-lg ">
         <!-- Navbar -->
 
-          <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
+          <nav class="navbar navbar-main navbar-expand-lg ps-2 ms-4 shadow-none border-radius-xl position-fixed w-80" style="z-index: 100" id="navbarBlur" data-scroll="true">
             <div class="container-fluid py-1 px-3">
               <!-- Left navbar menu -->
               <nav aria-label="breadcrumb">
@@ -30,7 +30,7 @@
                       @if(isset($notif) && $notif->status == true)
                         @include("layouts.".\Auth::user()->jabatan.".notif" )
                       @else
-                        <li class="mb-2">
+                        <li class="mb-2 ">
                             <a class="dropdown-item border-radius-md" href="javascript:;">
                                 <div class="d-flex py-1">
                                     <span>Tidak ada pemberitahuan</span>

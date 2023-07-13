@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Asuransi;
+use App\Models\Customer;
 use App\Models\DetailQc;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -9,6 +11,7 @@ use App\Models\User;
 use App\Models\SPK;
 use App\Models\Merk;
 use App\Models\Jenis;
+use App\Models\Leasing;
 use App\Models\Mobil;
 use App\Models\PendukungDetailQc;
 use App\Models\Qc;
@@ -37,6 +40,19 @@ class pageController extends Controller
         return view('auth.login')->with('pej',$pej);
     }
 
+    public function Prospek() {
+        $pej = $this->PageObj("Prospek","prospek");
+        $notif = $this->UserNotif();
+
+        $prospek = transaksiJual::select('transaksi_juals.*','customers.nama as pemesan','customers.telp as kontak','mobils.nama as type','merks.nama as merk')
+        ->join('customers','transaksi_juals.id_customer','=','customers.id')
+        ->join('mobils','transaksi_juals.id_mobil','=','mobils.id')
+        ->join('merks','mobils.id_merk','=','merks.id')
+        ->where('id_sales',Auth::user()->id)->get();
+
+        return view('layouts.sales.prospek')->with('pej',$pej)->with('notif',$notif)->with('prospek',$prospek);
+    }
+
     public function SPK()
     {
         $pej = $this->PageObj("SPK","spk");
@@ -50,7 +66,30 @@ class pageController extends Controller
         $pej = $this->PageObj("Jual","jual");
         $notif = $this->UserNotif();
 
-        return view('jual')->with('pej',$pej)->with('notif',$notif);
+        $merk = Merk::orderBy('nama','ASC')->get();
+
+        $customer = Customer::orderBy('nama','ASC')->get();
+
+        return view('jual')->with('pej',$pej)->with('notif',$notif)->with('merk',$merk)->with('customer',$customer);
+    }
+
+    public function InputSPK(Request $req) {
+        $pej = $this->PageObj("Input SPK","spk/input");
+        $notif = $this->UserNotif();
+
+        $jual = transaksiJual::select('transaksi_juals.*','customers.nama as pemesan','customers.alamat as domisili','customers.telp as kontak','mobils.nama as type','merks.nama as merk')
+        ->join('customers','transaksi_juals.id_customer','=','customers.id')
+        ->join('mobils','transaksi_juals.id_mobil','=','mobils.id')
+        ->join('merks','mobils.id_merk','=','merks.id')
+        ->where('transaksi_juals.id','=',$req->id_jual)->first();
+
+        $spk = SPK::find($jual->id_spk);
+
+        $asuransi = Asuransi::all();
+
+        $leasing = Leasing::all();
+
+        return view('SPK')->with('pej',$pej)->with('notif',$notif)->with('SPK',$spk)->with('jual',$jual)->with('asuransi',$asuransi)->with('leasing',$leasing);
     }
 
     public function Beli()
@@ -158,6 +197,9 @@ class pageController extends Controller
             )->join('mobils','qcs.id_mobil','=','mobils.id')
             ->join('merks','mobils.id_merk','=','merks.id')
             ->where('id_pdi','=',Auth::user()->id)
+            ->where('status','=',null)
+            ->where('state','=',1)
+            ->where('state','=',7)
             ->orderBy('updated_at', 'desc')->get();        
 
         return view('layouts.ops.pemeriksaan')->with('pej',$pej)->with('notif',$notif)->with('mobil',$mobil);
@@ -173,6 +215,11 @@ class pageController extends Controller
         ->join('merks','mobils.id_merk','=','merks.id')
         ->join('jenis','mobils.id_jenis','=','jenis.id')
         ->where('mobils.id',$qc->id_mobil)->first();
+
+        $dqc->ban_kiri_depan = explode('|',$dqc->ban_kiri_depan);
+        $dqc->ban_kiri_belakang = explode('|',$dqc->ban_kiri_belakang);
+        $dqc->ban_kanan_depan = explode('|',$dqc->ban_kanan_depan);
+        $dqc->ban_kanan_belakang = explode('|',$dqc->ban_kanan_belakang);
 
         $pej = $this->PageObj("Pemeriksaan ". $mobil['merk'] ." ". $mobil['nama'],"/pemeriksaan");
 
@@ -329,7 +376,7 @@ class pageController extends Controller
             $not->notif = "";
         }
 
-        $not->pemeriksaan = Qc::where('id_pdi','=',Auth::user()->id)->where('selesai','=',0)->count();
+        $not->pemeriksaan = Qc::where('id_pdi','=',Auth::user()->id)->where('selesai','=',0)->where()->count();
 
         return $not;
     }

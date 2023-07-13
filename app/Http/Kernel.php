@@ -69,7 +69,8 @@ class Kernel extends HttpKernel
         'finance' => \App\Http\Middleware\Finance::class,
         'sales' => \App\Http\Middleware\Sales::class,
         'ops' => \App\Http\Middleware\Ops::class,
-        'jbmid' => \App\Http\Middleware\JBMid::class,        
+        'jbmid' => \App\Http\Middleware\JBMid::class,
+        'denies' => \App\Http\Middleware\DeniedAll::class 
 
     ];
 }

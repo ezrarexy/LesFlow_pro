@@ -51,6 +51,28 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
+    <style>
+        .scroll-container {
+        height: 100vh;
+        width: 100%;
+        overflow-y: scroll;
+        scrollbar-width: thin; /* Untuk browser modern */
+        scrollbar-color: transparent transparent; /* Untuk browser modern */
+        }
+
+        /* Untuk browser WebKit seperti Chrome dan Safari */
+        .scroll-container::-webkit-scrollbar {
+        width: 6px;
+        }
+
+        .scroll-container::-webkit-scrollbar-track {
+        background-color: transparent;
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb {
+        background-color: transparent;
+        }
+    </style>
 
 
     @yield('style')
@@ -61,7 +83,7 @@
   </head>
 
 
-  <body class="g-sidenav-show  bg-gray-100">
+  <body class="g-sidenav-show  bg-gray-100 scroll-container">
     
     @include('tmp.sidebar')
 
@@ -69,7 +91,7 @@
 
         @include('tmp.topbar')
 
-        <div class="container-fluid py-4">            
+        <div class="container-fluid py-4 pt-5">        
 
             @yield('content')
 
@@ -140,7 +162,7 @@
     </main>
 
 
-    @if(\Auth::user()->id_role==2 || \Auth::user()->id_role==4)
+    @if(\Auth::user()->id_role==2 || \Auth::user()->id_role==4 || \Auth::user()->id_role==5)
         <div class="fixed-plugin">
             <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
             <i class="material-icons py-2">point_of_sales</i>

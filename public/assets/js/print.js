@@ -135,9 +135,9 @@ function SPK(data) {
 
     doc.setFontSize(11);
     doc.text("NOMOR", 128, 25);
-    doc.text(": ", 148, 25);
+    doc.text(": "+String(data.id_spk).padStart(5, '0'), 148, 25);
     doc.text("TANGGAL", 128, 32);
-    doc.text(": ", 148, 32);
+    doc.text(": "+data.tanggal, 148, 32);
 
     // line
     doc.setDrawColor(0, 0, 0);
@@ -147,24 +147,24 @@ function SPK(data) {
     // form
     doc.setFontSize(11);
     doc.text("Nama Pemesan", 8, 46);
-    doc.text(": ", 50, 46);
+    doc.text(": "+data.pemesan, 50, 46);
     doc.text("No. KTP / KITAS", 8, 52);
-    doc.text(": ", 50, 52);
+    doc.text(": "+data.nik, 50, 52);
     doc.text("Alamat Domisili / Usaha", 8, 58);
-    doc.text(": ", 50, 58);
+    doc.text(": "+data.alamat, 50, 58);
     doc.text("No. HP / Telp", 8, 64);
-    doc.text(": ", 50, 64);
+    doc.text(": "+data.telp, 50, 64);
     doc.text("Instagram", 8, 70);
-    doc.text(": ", 50, 70);
+    doc.text(": "+data.instagram, 50, 70);
     doc.text("Facebook", 8, 76);
-    doc.text(": ", 50, 76);
+    doc.text(": "+data.facebook, 50, 76);
 
     doc.text("Nama Pemakai", 95, 64);
-    doc.text(": ", 125, 64);
+    doc.text(": "+data.namaP, 125, 64);
     doc.text("Alamat Domisili", 95, 70);
-    doc.text(": ", 125, 70);
+    doc.text(": "+data.alamatP, 125, 70);
     doc.text("No. HP / Telp", 95, 76);
-    doc.text(": ", 125, 76);
+    doc.text(": "+data.telP, 125, 76);
 
     // line for table
     doc.setLineWidth(0.2);
@@ -184,25 +184,25 @@ function SPK(data) {
     doc.setFont(undefined, 'normal');
     doc.setFontSize(10);
     doc.text("Merk / Tipe", 8, 98);
-    doc.text(": ", 27, 98);
-    doc.text("Rp. 550.000.000", 96, 98);
+    doc.text(": "+data.merk+" "+data.type, 27, 98);
+    doc.text("Rp."+$.number(data.harga_jadi), 96, 98);
     doc.text("Tahun", 8, 106);
-    doc.text(": ", 27, 106);
+    doc.text(": "+data.tahun, 27, 106);
     doc.text("Warna", 8, 114);
-    doc.text(": ", 27, 114);
+    doc.text(": "+data.warna, 27, 114);
     doc.text("No. Polisi", 8, 122);
-    doc.text(": ", 27, 122);
-    doc.text("Catatan Tambahan :", 8, 130);
-    doc.text("Tukar Tambah Mobil", 8, 136);
-    doc.text("....................................", 8, 144); //input
-    doc.text("Rp. ", 96, 144);
-    doc.text("Pelunasan Kredit Via", 8, 152);
-    doc.text("....................................", 43, 152); //input
-    doc.text("Rp. ", 96, 152);
-    doc.text("....................................", 8, 160); //input
-    doc.text("....................................", 8, 168); //input
-    doc.text("....................................", 8, 176); //input
-    doc.text("Total : Rp. ", 85, 184);
+    doc.text(": "+data.nomor_polisi, 27, 122);
+    // doc.text("Catatan Tambahan :", 8, 130);
+    // doc.text("Tukar Tambah Mobil", 8, 136);
+    // doc.text("....................................", 8, 144); //input
+    // doc.text("Rp. ", 96, 144);
+    // doc.text("Pelunasan Kredit Via", 8, 152);
+    // doc.text("....................................", 43, 152); //input
+    // doc.text("Rp. ", 96, 152);
+    // doc.text("....................................", 8, 160); //input
+    // doc.text("....................................", 8, 168); //input
+    // doc.text("....................................", 8, 176); //input
+    // doc.text("Total : Rp"+data.harga_jadi, 85, 184);
 
     doc.setFontSize(9);
     doc.text("1. Harga yang tercantum dalam surat pesanan", 133, 95);
@@ -236,26 +236,34 @@ function SPK(data) {
     // Cara Pembayaran
     doc.setFontSize(10);
     doc.setFont(undefined, 'normal');
-    doc.text("Total DP", 10, 210);
-    doc.text(": Rp. ", 40, 210);
-    doc.text("Angsuran", 10, 218);
-    doc.text(": Rp. ", 40, 218);
-    doc.text("Jangka Waktu", 10, 226);
-    doc.text(": " + 0 + " Bulan", 40, 226);
+    if (data.id_jenis_pembayaran==1){
+        doc.setFont(undefined, 'bold');
+        doc.text("Tunai", 10, 210);
+    } else {
+        doc.setFont(undefined, 'bold');
+        doc.text("Kredit", 10, 210);
+        doc.setFont(undefined, 'normal');
+        doc.text("Total DP", 10, 218);
+        doc.text(": Rp. "+$.number(data.DP), 40, 218);
+        doc.text("Angsuran", 10, 226);
+        doc.text(": Rp. "+$.number(data.cicilan), 40, 226);
+        doc.text("Jangka Waktu", 10, 234);
+        doc.text(": " + +data.tenor + " Bulan", 40, 234);
+    }
 
     // Asuransi
     // doc.text("- Tunai", 137, 210);
-    doc.text("- Kredit", 137, 210);
-    doc.text("- TLO", 137, 218);
+    // doc.text("- Kredit", 137, 210);
+    doc.text("- "+data.jenis_asuransi, 137, 210);
     // doc.text("- Kombinasi", 137, 218);
     // doc.text("- Allrisk", 137, 218);
-    doc.text("- Perusahaan Asuransi ", 137, 226);
-    doc.text("- Biaya Asuransi Rp. ", 137, 234);
-    doc.text("- Tanggung jawab pihak ke-3 (TJH 3)", 137, 242);
-    doc.text("Rp. ", 139, 250);
-    doc.text("- Asuransi Jiwa", 137, 258);
-    doc.text("- Asuransi Kebakaran, Terorisme,", 137, 266);
-    doc.text("Bencana Alam", 139, 271);
+    doc.text("- "+data.perusahaan_asuransi, 137, 218);
+    doc.text("- Biaya Asuransi Rp. "+$.number(data.biaya_asuransi), 137, 226);
+    // doc.text("- Tanggung jawab pihak ke-3 (TJH 3)", 137, 234);
+    // doc.text("Rp. ", 139, 242);
+    // doc.text("- Asuransi Jiwa", 137, 250);
+    // doc.text("- Asuransi Kebakaran, Terorisme,", 137, 258);
+    // doc.text("Bencana Alam", 139, 266);
 
     doc.line(5, 276, 205, 276); // horizontal
 

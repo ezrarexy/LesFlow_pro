@@ -46,7 +46,6 @@ class OPSController extends Controller
             $qc->save();
 
             $mobil = Mobil::find($req->id_mobil);
-                $mobil->transmisi = $req->transmisi;
                 $mobil->isi_silinder = $req->isi_silinder;
                 $mobil->warna_interior = $req->warna_interior;
                 $mobil->odometer = $req->odometer;
@@ -60,4 +59,68 @@ class OPSController extends Controller
         return response(['status'=>'success']);
     }
 
+    public function QCClick(Request $req) {
+        $col = $req->col;
+
+        try {
+            $dqc = DetailQc::find($req->id);
+            $dqc->$col = $req->val;
+            $dqc->save();
+        } catch (\Throwable $th) {
+            return response(['status'=>'fail','res'=>$th]);
+        }
+
+        
+
+
+        return response(['status'=>'success']);
+    }
+    
+    public function BanQC(Request $req) {
+
+        try {
+            $dqc = DetailQc::find($req->id);
+            $ban = $req->ban;
+    
+            $temp = explode('|',$dqc->$ban);
+            $temp[$req->col] = $req->val;
+    
+            $dqc->$ban = $temp[0]."|".$temp[1]."|".$temp[2]."|".$temp[3];
+
+            $dqc->save();
+
+        } catch (\Throwable $th) {
+            return response(['status'=>'fail','res'=>$th]);    
+        }
+
+        
+
+        return response(['status'=>'success']);
+    }
+
+    public function SubmitQC(Request $req) {
+        $qc = Qc::find($req->id);
+        $mobil = Mobil::find($qc->id_mobil);
+
+        if (isset($req->notReady)) {
+            $qc->node = 5;
+
+            $mobil->state = 5;
+            $mobil->status = 'repair';
+
+            $qc->save();
+            $mobil->save();
+        } else {
+            $qc->node = 8;
+            $qc->selesai = 1;
+
+            $mobil->state = 8;
+            $mobil->status = 'ready';
+
+            $qc->save();
+            $mobil->save();
+        }
+
+        return redirect()->route('home');
+    }
 }

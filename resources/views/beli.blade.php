@@ -3,6 +3,7 @@
 @section('title',$pej->name)
 
 @section('style')
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css" rel="stylesheet"/>
 @endsection
 
 @section('sidemenu')
@@ -39,29 +40,50 @@
                 </select>
             </div>
 
-            <div class="mb-3">
-                <label for="itype" class="form-label">Type</label>
-                <input type="text" name="type" id="itype" class="form-control border" placeholder="Type" required/>
+            <div class="mb-3 row">
+                <div class="col-md-6">
+                    <label for="itype" class="form-label">Type</label>
+                    <input type="text" name="type" id="itype" class="form-control border" placeholder="Type" required/>        
+                </div>
+                <div class="col-md-6">
+                    <label for="iwarna" class="form-label">Warna</label>
+                    <input type="text" name="warna" id="iwarna" class="form-control border" placeholder="Warna" required/>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label for="iJenis">Jenis</label>
-                <select name="jenis" class="form-select" id="iJenis">
-                    <option value="">=== Pilih Jenis ===</option>
-                    @foreach($jenis as $v => $k)
-                        <option value="{{$k->id}}">{{$k->nama}}</option>
-                    @endforeach
-                </select>
+            <div class="mb-3 row">
+                <div class="col-md-6">
+                    <label for="iJenis">Jenis</label>
+                    <select name="jenis" class="form-select" id="iJenis" required>
+                        <option value="">=== Pilih Jenis ===</option>
+                        @foreach($jenis as $v => $k)
+                            <option value="{{$k->id}}">{{$k->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="iBB">Bahan Bakar</label>
+                    <select name="bahan_bakar" class="form-select" id="iBB" required>
+                        <option value="">=== Pilih Bahan Bakar ===</option>
+                        <option value="bensin">Bensin</option>
+                        <option value="diesel">Diesel</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label for="iwarna" class="form-label">Warna</label>
-                <input type="text" name="warna" id="iwarna" class="form-control border" placeholder="Warna" required/>
-            </div>
-
-            <div class="mb-3">
-                <label for="itahun" class="form-label">Tahun</label>
-                <input  name="tahun" id="itahun" class="form-control border" placeholder="Tahun" required/>
+            <div class="mb-3 row">
+                <div class="col-md-6">
+                    <label for="itahun" class="form-label">Tahun</label>
+                    <input  name="tahun" id="itahun" class="form-control border" placeholder="Tahun" required/>
+                </div>
+                <div class="col-md-6">
+                    <label for="iTransmisi">Transmisi</label>
+                    <select name="transmisi" class="form-select" id="iTransmisi" required>
+                        <option value="">=== Pilih Transmisi ===</option>
+                        <option value="at">Automatic</option>
+                        <option value="mt">Manual</option>
+                    </select>
+                </div>
             </div>            
 
             <div class="mb-3">
@@ -196,7 +218,6 @@
 @section('script')
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css" rel="stylesheet"/>
 <script src="{{asset('assets/vendor/jquery/jquery.number.min.js')}}"></script>
 
 

@@ -3,7 +3,7 @@
 @section('title',$pej->name)
 
 @section('style')
-    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css">
 @endsection
 
 @section('sidemenu')
@@ -33,7 +33,11 @@
                     @if ($v->node == 0)
                         <button class="btn text-white" style="background-color: #198754" onclick="mulai({{ json_encode($v) }})">Mulai</button>
                     @else
-                        <button class="btn text-white" style="background-color: #0d6efd">Lanjutkan</button>
+                        <form action="{{ route('periksa') }}" method="POST">
+                            @csrf
+                            <input name="id" type="text" value="{{$v->id}}" hidden>
+                            <button class="btn text-white" style="background-color: #0d6efd">Lanjutkan</button>
+                        </form>
                     @endif
                 </div>
             </div>
@@ -56,14 +60,6 @@
                         @csrf
                         <input name="id" id="iId" type="text" hidden/>
                         <input name="id_mobil" id="iIdMobil" type="text" hidden/>
-                        <div class="mb-3">
-                            <label for="iTransmisi">Transmisi</label>
-                            <select name="transmisi" id="iTransmisi" class="form-select isian" required>
-                                <option value="">=== Pilih Transmisi ===</option>
-                                <option value="AT">Automatic</option>
-                                <option value="MT">Manual</option>
-                            </select>
-                        </div>
                         <div class="mb-3">
                             <label for="iIsiSilinder">Isi Silinder</label>
                             <input type="number" name="isi_silinder" id="iIsiSilinder" class="form-control isian" required/>
@@ -99,7 +95,7 @@
 
 @section('script')
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
 
 <script>
     $(function () {
