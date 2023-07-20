@@ -12,38 +12,40 @@
 
 @section('content')
 
-    @foreach ($mobil as $k => $v)
+        @foreach ($mobil as $k => $v)
 
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">{{ $v->merk." ".$v->nama }} <span class="badge bg-danger">{{$v->tahun}}</span></h4>
-                <p class="card-text">{{$v->nomor_polisi}}</p>
-            </div>
-            <div class="card-body row">
-                <div class="col-md-10">
-                    <table>
-                        <th>
-                            <td width="10%">Kondisi</td>
-                            <td>:</td>
-                            <td width="90%" class="ps-3">{{$v->kondisi}}</td>
-                        </th>
-                    </table>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">{{ $v->merk." ".$v->nama }} <span class="badge bg-danger">{{$v->tahun}}</span></h4>
+                    <p class="card-text">{{$v->nomor_polisi}}</p>
                 </div>
-                <div class="col-md-2">
-                    @if ($v->node == 0)
-                        <button class="btn text-white" style="background-color: #198754" onclick="mulai({{ json_encode($v) }})">Mulai</button>
-                    @else
-                        <form action="{{ route('periksa') }}" method="POST">
-                            @csrf
-                            <input name="id" type="text" value="{{$v->id}}" hidden>
-                            <button class="btn text-white" style="background-color: #0d6efd">Lanjutkan</button>
-                        </form>
-                    @endif
+                <div class="card-body row">
+                    <div class="col-md-10">
+                        <table>
+                            <th>
+                                <td width="10%">Kondisi</td>
+                                <td>:</td>
+                                <td width="90%" class="ps-3">{{$v->kondisi}}</td>
+                            </th>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                        @if ($v->node == 0)
+                            <button class="btn text-white" style="background-color: #198754" onclick="mulai({{ json_encode($v) }})">Mulai</button>
+                        @else
+                            <form action="{{ route('periksa') }}" method="POST">
+                                @csrf
+                                <input name="id" type="text" value="{{$v->id}}" hidden>
+                                <button class="btn text-white" style="background-color: #0d6efd">Lanjutkan</button>
+                            </form>
+                        @endif
+                    </div>
                 </div>
             </div>
-        </div>
 
-    @endforeach
+        @endforeach
+    
+
 
 
 
@@ -79,7 +81,7 @@
                     </form>
                     <form id="goNext" action="{{route('periksa')}}" method="POST">
                         @csrf
-                        <input name="id" type="text" value="{{$v->id}}" hidden>
+                        <input name="id" type="text" id="iQcId" hidden>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -108,7 +110,24 @@
 
     function mulai(x) {
         $('#iId').val(x.id);
+        $('#iQcId').val(x.id);
         $('#iIdMobil').val(x.id_mobil);
+
+        if (x.isi_silinder != null) {
+            $('#iIsiSilinder').val(x.isi_silinder);
+            $('#iIsiSilinder').prop('readonly', true);
+        }
+        if (x.warna_interior != null) {
+            $('#iWarnaInterior').val(x.warna_interior);
+            $('#iWarnaInterior').prop('readonly', true);
+        }
+        if (x.odometer != null) {
+            $('#iOdoMeter').val(x.odometer);
+        }
+        if (x.pajak != null) {
+            $('#iPajak').val(x.pajak);
+            $('#iPajak').prop('readonly', true);
+        }
 
 
         $('#inputSisa').modal('toggle');

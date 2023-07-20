@@ -259,11 +259,17 @@ function SPK(data) {
     // doc.text("- Allrisk", 137, 218);
     doc.text("- "+data.perusahaan_asuransi, 137, 218);
     doc.text("- Biaya Asuransi Rp. "+$.number(data.biaya_asuransi), 137, 226);
-    // doc.text("- Tanggung jawab pihak ke-3 (TJH 3)", 137, 234);
-    // doc.text("Rp. ", 139, 242);
-    // doc.text("- Asuransi Jiwa", 137, 250);
-    // doc.text("- Asuransi Kebakaran, Terorisme,", 137, 258);
-    // doc.text("Bencana Alam", 139, 266);
+    if (typeof(data.tjh3) != "undefined" && data.tjh3 !== null) {
+        doc.text("- Tanggung jawab pihak ke-3 (TJH 3)", 137, 234);
+        doc.text("Rp. ", 139, 242);
+    }
+    if (typeof(data.asuransi_jiwa) != "undefined" && data.asuransi_jiwa !== null) {
+        doc.text("- Asuransi Jiwa", 137, 250);
+    }
+    if (typeof(data.asuransi_kebakaran) != "undefined" && data.asuransi_kebakaran !== null) {
+        doc.text("- Asuransi Kebakaran, Terorisme,", 137, 258);
+        doc.text("Bencana Alam", 139, 266);
+    }
 
     doc.line(5, 276, 205, 276); // horizontal
 
@@ -333,12 +339,16 @@ function kwitansi(data) {
     doc.text("SUDAH TERIMA DARI", 15, 51);
     doc.text(": "+data.nama, 65, 51);
     doc.text("BANYAKNYA UANG", 15, 56);
-    doc.text(": Rp."+$.number( data.harga, 0 ), 65, 56);
+    doc.text(": ", 65, 56);
+    // doc.setFillColor(166, 166, 166);
+    // doc.roundedRect(66, 52, 129, 5, 2, 2, 'F');
+    // doc.roundedRect(66, 57, 129, 5, 2, 2, 'F');
+    doc.text(data.terbilang+" Rupiah", 67.5, 56, { maxWidth: 130 });
 
     doc.text("UNTUK PEMBAYARAN", 15, 66);
-    doc.text(": ", 65, 66);
+    doc.text(": "+data.untuk, 65, 66);
     doc.text("MERK MOBIL", 15, 71);
-    doc.text(": "+data.merk, 65, 71);
+    doc.text(": "+data.merk+" "+data.type, 65, 71);
     doc.text("TAHUN PEMBUATAN", 15, 76);
     doc.text(": "+data.tahun, 65, 76);
     doc.text("WARNA", 15, 81);
@@ -361,7 +371,7 @@ function kwitansi(data) {
 
     if (typeof(data.sisa) != "undefined" && data.sisa !== null) {
         doc.setFontSize(10);
-        doc.text("Sisa pelunasan senilai Rp." + data.sisa + ", akan diselesaikan selambat-lambatnya pada tanggal "+data.pelunasan, 15, 101);        
+        doc.text("Sisa pelunasan senilai Rp." + $.number( data.sisa, 0 ) + ", akan diselesaikan selambat-lambatnya pada tanggal "+data.pelunasan, 15, 101);        
     }
 
 
@@ -378,7 +388,7 @@ function kwitansi(data) {
 
     doc.setFillColor(166, 166, 166);
     doc.roundedRect(51, 132, 60, 7, 2, 2, 'F');
-    doc.text($.number( data.harga, 0 )+",-", 53, 137);
+    doc.text($.number( data.jumlah_uang, 0 )+",-", 53, 137);
 
     doc.setFontSize(10);
     doc.text("Palembang, "+data.today, 143, 112);
@@ -436,14 +446,16 @@ function BAST(data) {
     doc.text("Tanggal BAST", 18, 43);
     doc.text(": "+data.today, 45, 43);
     doc.text("Syarat Pembayaran", 18, 47);
-    doc.text(": ", 45, 47);
+    doc.text(":", 45, 47);
+    doc.text(data.syarat, 46, 47, { maxWidth: 42.5 });
+
+
 
     // in border radius
     doc.roundedRect(89, 52, 40, 15, 2, 2, 'S'); // (x, y, w, h, xrad, yrad, type(ambil 'S' saja kalau cuma garis))
 
     doc.text("Kepada : ", 92, 56);
     doc.text(data.kepada, 92, 62);
-
     // page 2
     doc.setFontSize(8);
     doc.setFont(undefined, 'bold');
@@ -461,6 +473,8 @@ function BAST(data) {
     doc.text(": "+data.type, 37, 89);
     doc.text("No Polisi", 18, 93);
     doc.text(": "+data.nomor_polisi, 37, 93);
+
+    
 
     // right side
     doc.text("Tahun", 85, 85);
@@ -493,35 +507,46 @@ function BAST(data) {
     doc.text("Perlengkapan", 18, 129);
     doc.text("STNK Asli", 50, 129);
     doc.text(": ", 70, 129);
+    doc.text((data.chSTNK==1 ? 'Ada' : 'Tidak'), 85, 129);
     doc.text("Ban Serep", 50, 133);
     doc.text(": ", 70, 133);
+    doc.text((data.chBan==1 ? 'Ada' : 'Tidak'), 85, 133);
     doc.text("Dongkrak", 50, 137);
     doc.text(": ", 70, 137);
+    doc.text((data.chDgrk==1 ? 'Ada' : 'Tidak'), 85, 137);
     doc.text("Kunci Roda", 50, 141);
     doc.text(": ", 70, 141);
+    doc.text((data.chKeyRod==1 ? 'Ada' : 'Tidak'), 85, 141);
 
     // caution
+    doc.setFontSize(6);
     doc.setDrawColor(255, 0, 0);
-    doc.roundedRect(18, 145, 52, 15, 2, 2, 'S');
+    doc.roundedRect(18, 145, 38, 11, 2, 2, 'S');
     doc.text("PERHATIAN :", 21, 149);
-    doc.text("Semua telah diterima dalam kondisi", 21, 153);
-    doc.text("baik / tanpa syarat", 21, 157);
+    doc.text("*", 21, 151);
+    doc.text("Semua telah diterima dalam kondisi", 22, 151);
+    doc.text("baik / tanpa syarat", 22, 153);
 
-    // new car
-    doc.roundedRect(75, 145, 54, 19, 2, 2, 'S');
-    doc.text("Unit Mobil Baru", 78, 149);
-    doc.text("A/N", 78, 153);
-    doc.text(": ", 92, 153);
-    doc.text("Alamat", 78, 157);
-    doc.text(": ", 92, 157);
-    doc.text("Plat Dasar", 78, 161);
-    doc.text(": ", 92, 161);
+
+    if (typeof(data.newCar) != "undefined" && data.newCar !== null) {
+        // new car
+        doc.setFontSize(7);
+        doc.roundedRect(75, 145, 54, 19, 2, 2, 'S');
+        doc.text("Unit Mobil Baru", 78, 149);
+        doc.text("A/N", 78, 153);
+        doc.text(": ", 92, 153);
+        doc.text("Alamat", 78, 157);
+        doc.text(": ", 92, 157);
+        doc.text("Plat Dasar", 78, 161);
+        doc.text(": ", 92, 161);
+    }
 
     // signature
+    doc.setFontSize(7);
     doc.text("Yang menyerahkan,", 27, 174);
     doc.text("(\t\t\t\t  )", 25, 196);
 
-    doc.text("Palembang, ", 85, 170);
+    doc.text("Palembang, "+data.tanggal, 85, 170);
     doc.text("Yang menerima,", 85, 174);
     doc.text("(\t\t\t\t  )", 83, 196);
 

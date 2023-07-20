@@ -46,6 +46,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::POST('/spk/cetak', [Controller::class, 'CetakSPK'])->name('cetakSPK');
 
+    Route::POST('/bast/cetak', [Controller::class, 'CetakBAST']);
+
 });
 
 Route::group(['middleware' => ['auth','jbmid']], function () {
@@ -81,6 +83,8 @@ Route::group(['middleware' => ['auth', 'admin']], function () {});
 
 Route::group(['middleware' => ['auth','finance']], function () {
 
+    Route::get('/listspk', [pageController::class, 'listSPK'])->name('listspk');
+
     Route::get('/pembayaran/beli', [pageController::class, 'PayB'])->name('pembayaranB');
 
     Route::PATCH('/doc/kwitansi/in', [FinanceController::class, 'InKwitansi'])->name('InKwitansi');
@@ -91,6 +95,10 @@ Route::group(['middleware' => ['auth','finance']], function () {
 
     Route::PATCH('/pembayaran/beli', [FinanceController::class, 'BayarBeli'])->name('bayarBeli');
 
+    Route::POST('/spk/uangSPK', [FinanceController::class, 'KwitansiSPK'])->name('uangSPK');
+
+    Route::POST('/spk/uangMobil', [FinanceController::class, 'KwitansiMobil'])->name('uangMobil');
+
 });
 
 Route::group(['middleware' => ['auth','sales']], function () {
@@ -99,6 +107,9 @@ Route::group(['middleware' => ['auth','sales']], function () {
 });
 
 Route::group(['middleware' => 'ops'], function () {
+
+    Route::get('/deliveryList', [pageController::class, 'DeliveryOrder'])->name('deliveryList');
+
     Route::get('/periksa/masuk', [pageController::class, 'PeriksaMasuk'])->name('periksaMasuk');
     
     Route::get('/periksa/keluar', [pageController::class, 'PeriksaKeluar'])->name('periksaKeluar');
@@ -116,6 +127,10 @@ Route::group(['middleware' => 'ops'], function () {
     ROUTE::PATCH('/banQC', [OPSController::class, 'BanQC'])->name('banQC');
 
     ROUTE::PATCH('/periksa', [OPSController::class, 'SubmitQC'])->name('SubmitQC');
+
+    Route::post('/bast/input', [OPSController::class, 'InputBAST'])->name('inputBAST');
+
+    Route::POST('/delivered', [OPSController::class, 'Delivered']);
 
 
 });

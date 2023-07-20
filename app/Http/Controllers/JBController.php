@@ -166,73 +166,83 @@ class JBController extends Controller
     public function InputSPK(Request $req) {
         $fileKTPnama = "";
 
-        // $jual = transaksiJual::find($req->input('id'));
+        $jual = transaksiJual::find($req->input('id'));
 
-        // $cust = Customer::find($jual->id_customer);
+        $cust = Customer::find($jual->id_customer);
 
-        // $spk = Spk::find($jual->id_spk);
+        $spk = Spk::find($jual->id_spk);
 
-        // $cust->nik = $req->input('nomor_ktp');
-        // $cust->jk = $req->input('jenis_kelamin');
-        // $cust->dob = $req->input('tanggal_lahir');
-        // $cust->id_agama = $req->input('agama');
-        // $cust->instagram = $req->input('instagram');
-        // $cust->facebook = $req->input('facebook');
+        $cust->nik = $req->input('nomor_ktp');
+        $cust->jk = $req->input('jenis_kelamin');
+        $cust->dob = $req->input('tanggal_lahir');
+        $cust->id_agama = $req->input('agama');
+        $cust->instagram = $req->input('instagram');
+        $cust->facebook = $req->input('facebook');
 
-        // $spk->nama_pemakai = $req->input('namaP');
-        // $spk->alamat = $req->input('alamatP');
-        // $spk->telp = $req->input('telP');
-        // $spk->id_jenis_pembayaran = $req->input('jenis_pembayaran');
-        // if ($req->input('jenis_pembayaran')==2) {
-        //     $spk->id_leasing = $req->input('leasing');
-        //     $spk->DP = $req->input('total_dp');
-        //     $spk->cicilan = $req->input('angsuran');
-        //     $spk->tenor = $req->input('tenor');
-        // }
-        // if ($req->input('asuransi')==1) {
-        //     $spk->id_asuransi = $req->input('id_asuransi');
-        //     $spk->id_jenis_asuransi = $req->input('jenisAsuransi');
-        //     $spk->biaya_asuransi = $req->input('biayaAsuransi');
-        // }
-        // $spk->node = 1;
+        $spk->nama_pemakai = $req->input('namaP');
+        $spk->alamat = $req->input('alamatP');
+        $spk->telp = $req->input('telP');
+        $spk->id_jenis_pembayaran = $req->input('jenis_pembayaran');
+        if ($req->input('jenis_pembayaran')==2) {
+            $spk->id_leasing = $req->input('leasing');
+            $spk->DP = $req->input('total_dp');
+            $spk->cicilan = $req->input('angsuran');
+            $spk->tenor = $req->input('tenor');
+        }
+        if ($req->input('asuransi')==1) {
+            $spk->id_asuransi = $req->input('id_asuransi');
+            $spk->id_jenis_asuransi = $req->input('jenisAsuransi');
+            $spk->biaya_asuransi = $req->input('biayaAsuransi');
+            if ( $req->input('tjh3') != null ) {
+                $spk->asuransi_jiwa = $req->input('tjh3');
+            }
+            if ( $req->input('asuransi_jiwa') != null ) {
+                $spk->asuransi_jiwa = $req->input('asuransi_jiwa');
+            }
+            if ( $req->input('asuransi_kebakaran') != null ) {
+                $spk->asuransi_jiwa = $req->input('asuransi_jiwa');
+            }
+        }
+        $spk->node = 1;
 
-        // $jual->id_jenis_pembayaran = $req->input('jenis_pembayaran');
-        // $jual->node = 6;
+        $jual->id_jenis_pembayaran = $req->input('jenis_pembayaran');
+        $jual->id_jenis_asuransi = $req->input('jenisAsuransi');
+        $jual->node = 6;
 
-        // // Mengambil file gambar
-        // if ($req->hasFile('photo_ktp')) {
-        //     $fileKTP = $req->file('photo_ktp');
+        // Mengambil file gambar
+        if ($req->hasFile('photo_ktp')) {
+            $fileKTP = $req->file('photo_ktp');
 
-        //     $ext = $fileKTP->getClientOriginalExtension();
+            $ext = $fileKTP->getClientOriginalExtension();
 
-        //     $imageName = $req->input('nomor_ktp') . '.' . $ext;
+            $imageName = $req->input('nomor_ktp') . '.' . $ext;
 
-        //     $cust->photo_ktp = $imageName;
+            $cust->photo_ktp = $imageName;
 
-        //     try {
-        //         Image::make($fileKTP)->save(public_path('assets/img/ktp/customers/').$imageName,80,$ext);
-        //     } catch (Exception $e) {
-        //         return response(['status'=>'fail','res'=>$e]);
-        //     }
-        // }
-
-
-        // // Simpan
-        // try {
-        //     DB::beginTransaction();
-        //         $cust->save();
-        //         $spk->save();
-        //         $jual->save();
-        //     DB::commit();
-        // } catch (\Throwable $th) {
-        //     DB::rollBack();
-        //     return response(['status'=>'fail','res'=>$th]);
-        // }
+            try {
+                Image::make($fileKTP)->save(public_path('assets/img/ktp/customers/').$imageName,80,$ext);
+            } catch (Exception $e) {
+                return response(['status'=>'fail','res'=>$e]);
+            }
+        }
 
 
+        // Simpan
+        try {
+            DB::beginTransaction();
+                $cust->save();
+                $spk->save();
+                $jual->save();
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response(['status'=>'fail','res'=>$th]);
+        }
 
 
-        return response(['status'=>'success']);
+
+
+        return response(['status'=>'success','res'=> $req->input('asuransi_jiwa') != null  ]);
     }
 
 

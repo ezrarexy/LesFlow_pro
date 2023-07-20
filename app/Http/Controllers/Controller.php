@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\bast;
 use App\Models\Mobil;
 use App\Models\transaksiJual;
 use Exception;
@@ -42,5 +43,12 @@ class Controller extends BaseController
         }
         
         return response(['status'=>'success','data'=>$data]);
+    }
+
+    public function CetakBAST(Request $req) {
+
+        $bast = bast::find($req->id);
+
+        return response(['status'=>'success','res'=>$bast]);
     }
 }

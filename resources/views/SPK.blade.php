@@ -22,7 +22,7 @@
             <div class="row">
                 <div class="mb-3 col-md-6">
                     <label for="jenisKelamin">Jenis Kelamin</label>
-                    <select name="jenis_kelamin" id="jenisKelamin" class="form-select">
+                    <select name="jenis_kelamin" id="jenisKelamin" data-phd="Jenis Kelamin" class="form-select">
                         <option selected disabled>=== Pilih Jenis Kelamin</Option>
                         <option value="L">Laki-laki</option>
                         <option value="P">Perempuan</option>
@@ -30,13 +30,13 @@
                 </div>
                 <div class="mb-3 col-md-6">
                     <label for="tanggal_lahir">Tanggal Lahir</label><br>
-                    <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control">
+                    <input type="date" name="tanggal_lahir" id="tanggal_lahir" data-phd="Tanggal Lahir" class="form-control">
                 </div>
             </div>
             <div class="row">
                 <div class="mb-3 col-md-6">
                     <label for="noKTP">Nomor KTP / KITAS</label>
-                    <input type="number" name="nomor_ktp" id="noKTP" class="form-control border" placeholder="Nomor KITAS" />
+                    <input type="text" name="nomor_ktp" id="noKTP" data-phd="Nomor KTP" class="form-control border nomor" placeholder="Nomor KITAS" />
                 </div>
                 <div class="mb-3 col-md-6">
                     <label for="fileKTP">Foto KTP</label><br>
@@ -45,16 +45,16 @@
             </div>
             <div class="mb-3">
                 <label for="alamat">Alamat Domisili / Usaha</label>
-                <input type="text" id="alamat" class="form-control border" value="{{$jual->domisili}}" readonly/>
+                <input type="text" id="alamat" data-phd="Alamat" class="form-control border" value="{{$jual->domisili}}" readonly/>
             </div>
             <div class="row"> 
                 <div class="mb-3 col-md-6">
                     <label for="telpon">No.Hp/Telp</label>
-                    <input type="text" id="telpon" class="form-control border" value="{{$jual->kontak}}" readonly/>
+                    <input type="text" id="telpon" data-phd="Nomor HP/Telp" class="form-control border nomor" value="{{$jual->kontak}}" readonly/>
                 </div>
                 <div class="mb-3 col-md-6">
                     <label for="agama">Agama</label>
-                    <select name="agama" id="agama" class="form-select">
+                    <select name="agama" id="agama" data-phd="Agama" class="form-select">
                         <option selected disabled>=== Pilih Agama ===</option>
                         <option value="1">Budha</option>
                         <option value="2">Hindu</option>
@@ -74,25 +74,25 @@
                     </div>
                     <div class="mb-3">
                         <label for="instagram">Instagram <i class="fab fa-instagram"></i></label>
-                        <input type="text" id="instagram" name="instagram" class="form-control border" placeholder="Username" aria-label="Username" />
+                        <input type="text" id="instagram" data-phd="Instagram" name="instagram" class="form-control border" placeholder="Username" aria-label="Username" />
                     </div>
                     <div class="mb-3">
                         <label for="facebook">Facebook <i class="fab fa-facebook"></i></label>
-                        <input type="text" id="facebook" name="facebook" class="form-control border" placeholder="Username" aria-label="Username" />
+                        <input type="text" id="facebook" data-phd="Facebook" name="facebook" class="form-control border" placeholder="Username" aria-label="Username" />
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="namaP">Nama Pemakai</label>
-                        <input type="text" id="namaP" name="namaP" class="form-control border" placeholder="Nama" aria-label="Nama" />
+                        <input type="text" id="namaP" data-phd="Nama Pemakai" name="namaP" class="form-control border" placeholder="Nama" aria-label="Nama" />
                     </div>
                     <div class="mb-3">
                         <label for="alamatP">Alamat Domisili</label>
-                        <input type="text" id="alamatP" name="alamatP" class="form-control border" placeholder="Alamat" aria-label="Alamat" />
+                        <input type="text" id="alamatP" data-phd="Alamat Pemakai" name="alamatP" class="form-control border" placeholder="Alamat" aria-label="Alamat" />
                     </div>
                     <div class="mb-3">
                         <label for="telpP">No.Hp/Telp</label>
-                        <input type="text" id="telpP" name="telP" class="form-control border" placeholder="Telpon" aria-label="Telpon" />
+                        <input type="text" id="telpP" data-phd="Nomor HP/Telpon" name="telP" class="form-control border nomor" placeholder="Telpon" aria-label="Telpon" />
                     </div>
                 </div>
             </div>
@@ -118,7 +118,7 @@
                     <div id="divKredit" class="d-none">
                         <div class="mb-3">
                             <label for="leasing">Leasing</label>
-                            <select name="leasing" id="leasing" class="form-select">
+                            <select name="leasing" id="leasing" data-phd="Leasing" class="form-select">
                                 <option selected disabled>=== Pilih Leasing</option>
                                 @foreach ($leasing as $k => $v)
                                     <option value="{{$v->id}}">{{$v->nama}}</option>                                
@@ -127,15 +127,15 @@
                         </div>
                         <div class="mb-3">
                             <label for="downPayment">Total DP</label>
-                            <input type="text" name="total_dp" id="downPayment" class="form-control border">
+                            <input type="text" name="total_dp" id="downPayment" data-phd="Total DP" class="form-control border uangs" placeholder="Rp . . . . ." />
                         </div>
                         <div class="mb-3">
                             <label for="angsuran">Angsuran</label>
-                            <input type="text" name="angsuran" id="angsuran" class="form-control border">
+                            <input type="text" name="angsuran" id="angsuran" data-phd="Angsuran Kredit" class="form-control border uangs" placeholder="Rp . . . . ." />
                         </div>
                         <div class="mb-3">
                             <label for="tenor">Jangka Waktu</label>
-                            <input type="text" name="tenor" id="tenor" class="form-control border">
+                            <input type="text" name="tenor" id="tenor" data-phd="Tenor Kredit" class="form-control border" placeholder=" . . bulan" />
                         </div>
                     </div>
                 </div>
@@ -161,7 +161,7 @@
                     <div id="divAsuransi" class="d-none">
                         <div class="mb-3">
                             <label for="id_asuransi">Asuransi</label>
-                            <select name="id_asuransi" id="id_asuransi" class="form-select">
+                            <select name="id_asuransi" id="id_asuransi" data-phd="Asuransi" class="form-select">
                                 <option selected disabled>=== Pilih Asuransi ===</option>
                                 @foreach ($asuransi as $k => $v)
                                     <option value="{{$v->id}}">{{$v->nama}}</option>                                
@@ -191,8 +191,24 @@
                         </div>
                         <div class="mb-3">
                             <label for="biayaAsuransi">Biaya Asuransi</label>
-                            <input type="text" class="form-control border" name="biayaAsuransi" id="biayaAsuransi"/>
+                            <input type="text" class="form-control border uangs" name="biayaAsuransi" id="biayaAsuransi" data-phd="Biaya Asuransi" placeholder="Rp . . . . ."/>
                         </div>
+                        <div class="mb-3 form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="tjh3switch">
+                            <label class="form-check-label" for="tjh3switch">Tanggung Jawab Pihak ke-3 (TJH 3)</label>
+                        </div>
+                        <div class="mb-3 d-none" id="tjh3div">
+                            <input type="text" class="form-control border uangs" name="tjh3" id="biayaTjh3" data-phd="Tanggung Jawab Pihak ke-3" placeholder="Rp . . . . ."/>
+                        </div>
+                        <div class="mb-3 form-check form-switch">
+                            <input class="form-check-input" name="asuransi_jiwa" type="checkbox" role="switch" id="asJiwa">
+                            <label class="form-check-label" for="asJiwa">Asuransi Jiwa</label>
+                        </div>
+                        <div class="mb-3 form-check form-switch">
+                            <input class="form-check-input" name="asuransi_kebakaran" type="checkbox" role="switch" id="asTeror">
+                            <label class="form-check-label" for="asTeror">Asuransi Kebakaran, Terorisme, Bencana Alam</label>
+                        </div>
+
                     </div>
 
                 </div>
@@ -211,22 +227,23 @@
     </div>
 
 
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header text-center">
-            
-        </div>
-        <div class="modal-body text-center">
-            <h1 class="modal-title fs-5 w-100" id="staticBackdropLabel">SPK Berhasil Diinput! <i class="material-icons opacity-10">verified</i></h1>
-        </div>
-        <div class="modal-footer">
-            <a class="btn btn-secondary" href="{{route('prospek')}}">Kaluar</a>
-            <button type="button" class="btn btn-primary" onclick="SPKcetak({{$jual->id}})">Cetak SPK</button>
-        </div>
+    {{-- Modal after input SPK --}}
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header text-center">
+                
+            </div>
+            <div class="modal-body text-center">
+                <h1 class="modal-title fs-5 w-100" id="staticBackdropLabel">SPK Berhasil Diinput! <i class="material-icons opacity-10">verified</i></h1>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-secondary" href="{{route('prospek')}}">Kaluar</a>
+                <button type="button" class="btn btn-primary" onclick="SPKcetak({{$jual->id}})">Cetak SPK</button>
+            </div>
+            </div>
         </div>
     </div>
-</div>
 
 @endsection
 
@@ -248,7 +265,11 @@
                 }
             });
 
-            $('#staticBackdrop').modal('show');
+            $('.uangs').number(true,0);
+
+            $('.nomor').number(true, 0, '', '', '', { aNeg: false });
+
+            // $('#staticBackdrop').modal('show');
         });
 
         $('input:radio[name="jenis_pembayaran"]').on('change', function () {
@@ -266,12 +287,27 @@
         $('input:radio[name="asuransi"]').on('change', function () {
             if ($(this).val() == 0) {
                 $('#divAsuransi').addClass('d-none');
-                $('#asuransi').prop('selectedIndex',0);
+                $('#id_asuransi').prop('selectedIndex',0);
                 $('input:radio[name="jenisAsuransi"]').prop('checked', false);
                 $('#biayaAsuransi').val("");
+                $('#tjh3switch').prop('checked', false);
+                $('#myCheckbox').val('');
+                $('#tjh3div').addClass(['d-none']);
+                $('#asJiwa').prop('checked', false);
+                $('#asTeror').prop('checked', false);
             } else {
                 $('#divAsuransi').removeClass('d-none');
             }
+        });
+
+        $('#tjh3switch').on('change', function() {
+            if ($(this).is(':checked')) {
+                $('#tjh3div').removeClass(['d-none']);
+            } else {
+                $('#tjh3div').addClass(['d-none']);
+                $('#biayaTjh3').val("");
+            }
+            
         });
 
 
@@ -279,7 +315,7 @@
             var isFormValid = true;
             var data = {};
 
-            $('#jenisKelamin, #fileKTP, #noKTP, #tanggal_lahir, #agama, #instagram, #facebook, #namaP, #alamatP, #telpP, input:radio[name="jenis_pembayaran"]:checked, input:radio[name="asuransi"]:checked').each(function() {
+            $('#jenisKelamin, #fileKTP, #noKTP, #tanggal_lahir, #agama, #namaP, #alamatP, #telpP, input:radio[name="jenis_pembayaran"]:checked, input:radio[name="asuransi"]:checked').each(function() {
                 var input = $(this);
                 
                 try {
@@ -289,9 +325,10 @@
 
                 }
 
-                if (value === '') {
+                if (value === '' || value === null) {
                     isFormValid = false;
-                    alert('Mohon lengkapi semua inputan sebelum mengirimkan formulir.');
+                    alert('Isi '+input.data("phd")+' sebelum mengirimkan formulir.');
+                    console.log(input.data('phd'));
                     $(this).focus();
                     return false; 
                 }
@@ -311,9 +348,9 @@
 
                     }
 
-                    if (value === '') {
+                    if (value === '' || value === null) {
                         isFormValid = false;
-                        alert('Mohon lengkapi semua inputan sebelum mengirimkan formulir.');
+                        alert('Isi '+input.data("phd")+' sebelum mengirimkan formulir.');
                         $(this).focus();
                         return false; 
                     }
@@ -323,7 +360,6 @@
                 });
             }
 
-            console.log('asuransi : '+data.asuransi);
 
             if(data.asuransi==1) {
                 $('#id_asuransi, input:radio[name="jenisAsuransi"]:checked, #biayaAsuransi').each(function() {
@@ -336,9 +372,9 @@
 
                     }
 
-                    if (value === '') {
+                    if (value === '' || value === null) {
                         isFormValid = false;
-                        alert('Mohon lengkapi semua inputan sebelum mengirimkan formulir.');
+                        alert('Isi '+input.data("phd")+' sebelum mengirimkan formulir.');
                         $(this).focus();
                         return false; 
                     }
@@ -366,6 +402,14 @@
 
                     formData.append('id',{{$jual->id}});
 
+                    if ($('#asJiwa').is(':checked')) {
+                        formData.append('asuransi_jiwa',1);
+                    }
+
+                    if ($('#asTeror').is(':checked')) {
+                        formData.append('asuransi_kebakaran',1);
+                    }
+
                     console.log(data);
 
                     $.ajax({
@@ -378,7 +422,9 @@
                             if (response.status=="success") {
                                 console.log(response.res);
                                 $('#staticBackdrop').modal('show');
-                            } 
+                            } else {
+                                console.log(response.res);
+                            }
                         }
                     });
                 } catch (error) {

@@ -48,7 +48,12 @@ class pageController extends Controller
         ->join('customers','transaksi_juals.id_customer','=','customers.id')
         ->join('mobils','transaksi_juals.id_mobil','=','mobils.id')
         ->join('merks','mobils.id_merk','=','merks.id')
-        ->where('id_sales',Auth::user()->id)->get();
+        ->where('id_sales',Auth::user()->id)
+        ->where('transaksi_juals.node','=',0)
+        ->where('transaksi_juals.node','=',1)
+        ->where('transaksi_juals.node','=',2)
+        ->where('transaksi_juals.node','=',3)
+        ->where('transaksi_juals.node','=',4)->get();
 
         return view('layouts.sales.prospek')->with('pej',$pej)->with('notif',$notif)->with('prospek',$prospek);
     }
@@ -58,7 +63,36 @@ class pageController extends Controller
         $pej = $this->PageObj("SPK","spk");
         $notif = $this->UserNotif();
 
-        return view('index')->with('pej',$pej)->with('notif',$notif);
+        $spk = transaksiJual::select('transaksi_juals.*','customers.nama as pemesan','customers.telp as kontak','mobils.nama as type','merks.nama as merk')
+        ->join('customers','transaksi_juals.id_customer','=','customers.id')
+        ->join('mobils','transaksi_juals.id_mobil','=','mobils.id')
+        ->join('merks','mobils.id_merk','=','merks.id')
+        ->where('id_sales',Auth::user()->id)
+        ->where('transaksi_juals.node','=',5)
+        ->orwhere('transaksi_juals.node','=',6)
+        ->orwhere('transaksi_juals.node','=',7)->get();
+
+        return view('listSPK')->with('pej',$pej)->with('notif',$notif)->with('prospek',$spk);
+
+    }
+
+    public function listSPK()
+    { 
+        $pej = $this->PageObj("SPK","listspk");
+        $notif = $this->UserNotif();
+
+        $spk = transaksiJual::select('transaksi_juals.*','customers.nama as pemesan','customers.telp as kontak','mobils.nama as type','merks.nama as merk','spks.id_kwitansi_uang_spk')
+        ->join('customers','transaksi_juals.id_customer','=','customers.id')
+        ->join('mobils','transaksi_juals.id_mobil','=','mobils.id')
+        ->join('merks','mobils.id_merk','=','merks.id')
+        ->join('spks','transaksi_juals.id_spk','=','spks.id')
+        ->where('id_sales',Auth::user()->id)
+        ->where('transaksi_juals.node','=',5)
+        ->orwhere('transaksi_juals.node','=',6)
+        ->orwhere('transaksi_juals.node','=',7)->get();
+
+        return view('layouts.keuangan.listSPK')->with('pej',$pej)->with('notif',$notif)->with('spk',$spk);
+
     }
 
     public function Jual()
@@ -179,8 +213,9 @@ class pageController extends Controller
         $pej = $this->PageObj("Periksa Mobil Keluar","/periksa/keluar");
         $notif = $this->UserNotif();
 
+        $mobil = Mobil::select('mobils.*','merks.nama as merk')->join('merks','mobils.id_merk','=','merks.id')->where('state','=','7')->get();
 
-        return view('layouts.ops.periksaKeluar')->with('pej',$pej)->with('notif',$notif);
+        return view('layouts.ops.periksaKeluar')->with('pej',$pej)->with('notif',$notif)->with('mobil',$mobil);
     }
 
     public function Pemeriksaan() {
@@ -193,14 +228,18 @@ class pageController extends Controller
             'merks.nama as merk',
             'mobils.tahun',
             'mobils.nomor_polisi',
-            'mobils.kondisi'
+            'mobils.kondisi',
+            'mobils.odometer',
+            'mobils.isi_silinder',
+            'mobils.warna_interior',
+            'mobils.pajak'
             )->join('mobils','qcs.id_mobil','=','mobils.id')
             ->join('merks','mobils.id_merk','=','merks.id')
             ->where('id_pdi','=',Auth::user()->id)
-            ->where('status','=',null)
-            ->where('state','=',1)
-            ->where('state','=',7)
-            ->orderBy('updated_at', 'desc')->get();        
+            ->where('node','=',0)
+            ->orWhere('node','=',1)
+            ->orderBy('updated_at', 'desc')->get();
+
 
         return view('layouts.ops.pemeriksaan')->with('pej',$pej)->with('notif',$notif)->with('mobil',$mobil);
     }
@@ -224,6 +263,35 @@ class pageController extends Controller
         $pej = $this->PageObj("Pemeriksaan ". $mobil['merk'] ." ". $mobil['nama'],"/pemeriksaan");
 
         return view('layouts.ops.periksa')->with('pej',$pej)->with('notif',$notif)->with('qc',$qc)->with('dqc',$dqc)->with('pdqc',$pdqc)->with('mobil',$mobil);
+    }
+
+    public function DeliveryOrder(Request $req) {
+        $pej = $this->PageObj("Delivery Order","/deliveryList");
+        $notif = $this->UserNotif();
+
+
+        $jual = transaksiJual::select(
+            'transaksi_juals.*', 'transaksi_juals.id as id_jual', 
+            'mobils.*',
+            'mobils.nama as type', 
+            'mobils.state as node_mobil',
+            'mobils.nomor_polisi',
+            'mobils.tahun',
+            'merks.nama as merk',
+            'spks.nama_pemakai',
+            'spks.alamat',
+            'spks.telp'
+            )
+            ->join('mobils','transaksi_juals.id_mobil','mobils.id')
+            ->join('merks','mobils.id_merk','merks.id')
+            ->join('spks','transaksi_juals.id_spk','spks.id')
+            ->where('transaksi_juals.node','=',7)
+            ->where('mobils.state',9)
+            ->get();
+
+            
+
+        return view('layouts.ops.deliveryOrder')->with('pej',$pej)->with('notif',$notif)->with('data',$jual);
     }
 
     //================================ Mengatur Notifikasi untuk masing masing user ======================================
@@ -376,7 +444,7 @@ class pageController extends Controller
             $not->notif = "";
         }
 
-        $not->pemeriksaan = Qc::where('id_pdi','=',Auth::user()->id)->where('selesai','=',0)->where()->count();
+        $not->pemeriksaan = Qc::where('id_pdi','=',Auth::user()->id)->where('selesai','=',0)->count();
 
         return $not;
     }
