@@ -447,7 +447,9 @@ function BAST(data) {
     doc.text(": "+data.today, 45, 43);
     doc.text("Syarat Pembayaran", 18, 47);
     doc.text(":", 45, 47);
-    doc.text(data.syarat, 46, 47, { maxWidth: 42.5 });
+    if (typeof(data.syarat) != "undefined" && data.syarat !== null) {
+        doc.text(data.syarat, 46, 47, { maxWidth: 42.5 });
+    }
 
 
 

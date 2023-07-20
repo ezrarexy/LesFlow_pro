@@ -59,7 +59,7 @@
 
                         <!-- Menu drop down -->
                       <li class="mb-2">
-                        <a href=""> <i class="fa fa-user"></i> Profile</a>
+                        <a href="/profile"> <i class="fa fa-user"></i> Profile</a>
                       </li>
                       <li class="mb-2">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#CPModal"> <i class="fas fa-key"></i> Ganti Password</a>

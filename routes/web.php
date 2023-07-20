@@ -46,7 +46,11 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::POST('/spk/cetak', [Controller::class, 'CetakSPK'])->name('cetakSPK');
 
+    Route::POST('/kwitansi/cetak', [Controller::class, 'CetakKwitansi'])->name('cetakKwitansi');
+
     Route::POST('/bast/cetak', [Controller::class, 'CetakBAST']);
+
+    Route::GET('/profile', [pageController::class, 'Profile']);
 
 });
 
@@ -67,6 +71,8 @@ Route::group(['middleware' => ['auth','jbmid']], function () {
     Route::POST('/spk/input', [pageController::class, 'InputSPK'])->name('spkIn');
 
     Route::POST('/spk/submit', [JBController::class, 'InputSPK'])->name('inSPK');
+
+    Route::GET('/transaksi/riwayat', [pageController::class, 'RiwayatTransaksi']);
 });
 
 Route::group(['middleware' => ['auth','manager']], function () {

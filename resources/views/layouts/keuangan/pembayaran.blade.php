@@ -75,6 +75,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/id.min.js"></script>
 <script src="{{asset('assets/js/print.js')}}"></script>
+<script src="{{asset('assets/js/terbilang.min.js')}}"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
 
 <script>
 
@@ -97,9 +99,36 @@
         var year = today.getFullYear();
 
         x.today = moment(today).locale('id').format('DD MMMM YYYY');
+        x.untuk = "Pembayaran Mobil";
+
 
         if(y==1) {
-            x.copy = true;
+
+            $.ajax({
+                type: "POST",
+                url: "/kwitansi/cetak",
+                data: {id:x.id_kwitansi},
+                dataType: "json",
+                success: function (response) {
+                    if(response.status == "success") {
+
+                        console.log(response.res);
+
+                        response.res.nama = "Lestari Mobilindo";
+                        response.res.untuk = x.untuk;
+                        response.res.terbilang = terbilang(response.res.harga);
+                        response.res.jumlah_uang = response.res.harga;
+                        response.res.today = x.today;
+                        response.res.copy = true;
+
+                        kwitansi(response.res);
+                        
+                    } else {
+                        console.log(response.res);
+                    }
+                }
+            });
+
         } else {
             $.ajax({
                 type: "PATCH",
@@ -108,15 +137,26 @@
                 dataType: "json",
                 success: function (response) {
                     if(response.status == "success") {
+
+                        console.log(response.res);
+
+                        response.res.nama = "Lestari Mobilindo";
+                        response.res.untuk = x.untuk;
+                        response.res.terbilang = terbilang(response.res.harga_beli);
+                        response.res.jumlah_uang = response.res.harga_beli;
+                        response.res.today = x.today;
+
+                        kwitansi(response.res);
+
                         location.reload();
+                    } else {
+                        console.log(response.res);
                     }
                 }
             });
         }
 
-        kwitansi(x);
 
-        // console.log(x);
     }
 
     function cetakTTbpkb(x,y) {
@@ -156,13 +196,29 @@
         var month = today.getMonth() + 1;
         var year = today.getFullYear();
 
-        x.today = moment(today).locale('id').format('dddd, DD MMMM YYYY');
+        x.today = moment(today).locale('id').format('DD MMMM YYYY');
         x.kepada = "Lestari Mobilindo";
 
         if(y==1) {
             x.copy = true;
 
-            BAST(x);
+            $.ajax({
+                type: "POST",
+                url: "/bast/cetak",
+                data: {id:x.id_BAST},
+                dataType: "json",
+                success: function (response) {
+                    if(response.status == "success") {
+                        response.res.today = moment(today).locale('id').format('dddd, DD MMMM YYYY');
+                        response.res.copy = true;
+
+
+                        BAST(response.res);
+                    }
+                }
+            });
+
+
         } else {
             $.ajax({
                 type: "PATCH",
@@ -172,7 +228,6 @@
                 success: function (response) {
                     if(response.status == "success") {
                         location.reload();
-                        // console.log(response.res);
                     }
                 }
             });

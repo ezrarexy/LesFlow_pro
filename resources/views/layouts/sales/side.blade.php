@@ -32,4 +32,13 @@
       </a>
     </li>
 
-      
+    <li class="nav-item">
+      <a class="nav-link text-white {{ $pej->link=='/transaksi/riwayat' ? 'active' : '' }}" href="{{ $pej->link=='/transaksi/riwayat' ? '#' : '/transaksi/riwayat' }}">
+        
+          <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="material-icons opacity-10">history_edu</i>
+          </div>
+        
+        <span class="nav-link-text ms-1">Riwayat Transaksi</span>
+      </a>
+    </li>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\kwitansi;
 use App\Models\transaksiBeli;
 use App\Models\Mobil;
 use App\Models\Spk;
@@ -15,30 +16,49 @@ class FinanceController extends Controller
 {
     public function InKwitansi(Request $req) {
 
-        $id = DB::table('kwitansis')->insertGetId([
-            'nama'=>$req->nama,
-            'harga'=>$req->harga,
-            'merk'=>$req->merk,
-            'tahun'=>$req->tahun,
-            'warna'=>$req->warna,
-            'bahan_bakar'=>$req->bahan_bakar,
-            'an_bpkb'=>$req->an_bpkb,
-            'alamat'=>$req->alamat,
-            'nomor_polisi'=>$req->nomor_polisi,
-            'nomor_rangka'=>$req->nomor_rangka,
-            'nomor_mesin'=>$req->nomor_mesin,
-            'nomor_bpkb'=>$req->nomor_bpkb,
-            'tanggal'=>$req->today,
-            'created_at' =>  Carbon::now(),
-            'updated_at' => Carbon::now(), 
-        ]);
+        $id = "";
 
-        $transBeli = new transaksiBeli;
-        $trans = $transBeli::find($req->id);
-        $trans->id_kwitansi = $id;
-        $trans->save();
+        try {
+            DB::beginTransaction();
+                $id = DB::table('kwitansis')->insertGetId([
+                    'nama'=>"Lestari Mobilindo",
+                    'untuk'=>$req->untuk,
+                    'harga'=>$req->harga,
+                    'merk'=>$req->merk." ".$req->type,
+                    'tahun'=>$req->tahun,
+                    'warna'=>$req->warna,
+                    'bahan_bakar'=>$req->bahan_bakar,
+                    'an_bpkb'=>$req->an_bpkb,
+                    'alamat'=>$req->alamat,
+                    'nomor_polisi'=>$req->nomor_polisi,
+                    'nomor_rangka'=>$req->nomor_rangka,
+                    'nomor_mesin'=>$req->nomor_mesin,
+                    'nomor_bpkb'=>$req->nomor_bpkb,
+                    'tanggal'=>$req->today,
+                    'created_at' =>  Carbon::now(),
+                    'updated_at' => Carbon::now(), 
+                ]);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response(['status'=>'fail','res'=>$e]);
+        }
+        try {
+            DB::beginTransaction();
+                $transBeli = new transaksiBeli;
+                $trans = $transBeli::find($req->id);
+                $trans->id_kwitansi = $id;
+                $trans->save();
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response(['status'=>'fail','res'=>$e]);
+        }
 
-        return response(['status'=>'success']);
+        $kwitansi = Mobil::select('mobils.*','mobils.nama as type','merks.nama as merk')->join('merks','mobils.id_merk','=','merks.id')->where('mobils.id',$req->id_mobil)->first();
+
+        
+        return response(['status'=>'success','res'=>$kwitansi]);
     }
 
     public function InTTbpkb(Request $req) {
@@ -201,7 +221,7 @@ class FinanceController extends Controller
                 } else {
                     $id_kwitnsi = DB::table('kwitansis')->insertGetId([
                         'untuk' => $req->untuk,
-                        'nama' => $req->harga,
+                        'nama' => $req->nama,
                         'harga' => $req->harga,
                         'merk' => $data->merk." ".$data->type,
                         'tahun' => $data->tahun,

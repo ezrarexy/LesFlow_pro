@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\bast;
+use App\Models\Customer;
 use App\Models\DetailQc;
 use App\Models\Mobil;
 use App\Models\PendukungDetailQc;
@@ -195,6 +196,7 @@ class OPSController extends Controller
 
         $jual = transaksiJual::find($req->input('id'));
         $bast = bast::find($jual->id_bast);
+        $cust = Customer::find($jual->id_customer);
 
         // Mengambil file gambar
         if ($req->hasFile('foto')) {
@@ -214,10 +216,19 @@ class OPSController extends Controller
         $bast->foto = $imageName;
         $jual->node = 8;
 
+        
+
+        if ($cust->state==0) {
+            $cust->state = 1;
+        } else {
+            $cust->state = 2;
+        }
+
         try {
             DB::beginTransaction();
                 $bast->save();
                 $jual->save();
+                $cust->save();
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();

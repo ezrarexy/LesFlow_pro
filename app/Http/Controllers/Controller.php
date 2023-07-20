@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\bast;
+use App\Models\kwitansi;
 use App\Models\Mobil;
 use App\Models\transaksiJual;
 use Exception;
@@ -50,5 +51,12 @@ class Controller extends BaseController
         $bast = bast::find($req->id);
 
         return response(['status'=>'success','res'=>$bast]);
+    }
+
+    public function CetakKwitansi(Request $req) {
+
+        $kwitansi = kwitansi::find($req->id);
+
+        return response(['status'=>'success','res'=>$kwitansi]);
     }
 }

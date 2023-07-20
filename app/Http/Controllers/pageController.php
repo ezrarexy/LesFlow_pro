@@ -294,6 +294,13 @@ class pageController extends Controller
         return view('layouts.ops.deliveryOrder')->with('pej',$pej)->with('notif',$notif)->with('data',$jual);
     }
 
+    public function RiwayatTransaksi(Request $req) {
+        $pej = $this->PageObj("Riwayat Transaksi","/transaksi/riwayat");
+        $notif = $this->UserNotif();
+
+        return view('riwayat')->with('pej',$pej)->with('notif',$notif);
+    }
+
     //================================ Mengatur Notifikasi untuk masing masing user ======================================
     public function UserNotif() {
         $notif = app()->make('stdClass');
