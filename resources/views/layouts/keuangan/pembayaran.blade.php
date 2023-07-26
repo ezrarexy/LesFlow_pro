@@ -168,7 +168,19 @@
         x.today = moment(today).locale('id').format('DD MMMM YYYY');
         
         if(y==1) {
-            x.copy = true;
+            $.ajax({
+                type: "PATCH",
+                url: "{{ route('InTTbpkb') }}",
+                data: x,
+                dataType: "json",
+                success: function (response) {
+                    if(response.status == "success") {
+                        response.res.tanggal = moment(today).locale('id').format('dddd, DD MMMM YYYY');
+                        response.res.copy = true;
+                        ttBPKB(response.res);
+                    }
+                }
+            });
         } else {
             $.ajax({
                 type: "PATCH",
@@ -177,14 +189,15 @@
                 dataType: "json",
                 success: function (response) {
                     if(response.status == "success") {
+                        response.res.today = moment(today).locale('id').format('dddd, DD MMMM YYYY');
                         location.reload();
-                        // console.log(response.res);
+                        ttBPKB(response.res);
                     }
                 }
             });
         }
 
-        ttBPKB(x);
+
 
     }
 

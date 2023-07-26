@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\JBController;
+use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\OPSController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -52,6 +53,12 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::GET('/profile', [pageController::class, 'Profile']);
 
+    Route::GET('/qc/res', [Controller::class, 'HasilQC']);
+
+    Route::GET('/dokumen/get', [Controller::class, 'GetDokumen']);
+
+    Route::POST('/dokumen/put', [Controller::class, 'PutDokumen']);
+
 });
 
 Route::group(['middleware' => ['auth','jbmid']], function () {
@@ -73,6 +80,8 @@ Route::group(['middleware' => ['auth','jbmid']], function () {
     Route::POST('/spk/submit', [JBController::class, 'InputSPK'])->name('inSPK');
 
     Route::GET('/transaksi/riwayat', [pageController::class, 'RiwayatTransaksi']);
+
+    Route::GET('/mobil', [pageController::class, 'ListMobil']);
 });
 
 Route::group(['middleware' => ['auth','manager']], function () {
@@ -83,6 +92,27 @@ Route::group(['middleware' => ['auth','manager']], function () {
     Route::PATCH('/konfirmasi/jual', [JBController::class, 'KonfirmasiJ'])->name('konfirmasiJ');
     
     Route::PATCH('/konfirmasi/beli', [JBController::class, 'KonfirmasiB'])->name('konfirmasiB');
+
+    Route::GET('/user', [pageController::class, 'User']);
+
+    Route::POST('/user/add', [ManagerController::class, 'UserAdd']);
+
+    Route::POST('/bottom/set', [ManagerController::class, 'SetBottom']);
+
+    Route::POST('/harga/set', [ManagerController::class, 'SetHarga']);
+
+    Route::GET('/bengkel', [pageController::class, 'Bengkel']);
+
+    Route::POST('/bengkel/add', [ManagerController::class, 'BengkelAdd']);
+
+    Route::DELETE('/bengkel/rm', [ManagerController::class, 'BengkelRm']);
+
+    Route::GET('/asuransi', [pageController::class, 'Asuransi']);
+
+    Route::POST('/asuransi/add', [ManagerController::class, 'AsuransiAdd']);
+
+    Route::DELETE('/asuransi/rm', [ManagerController::class, 'AsuransiRm']);
+
 });
 
 Route::group(['middleware' => ['auth', 'admin']], function () {});

@@ -14,7 +14,7 @@
 @endphp
 
 @section('style')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" integrity="sha512-Velp0ebMKjcd9RiCoaHhLXkR1sFoCCWXNp6w4zj1hfMifYB5441C+sKeBl/T/Ka6NjBiRfBBQRaQq65ekYz3UQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 @endsection
 
 
@@ -46,12 +46,12 @@
                         <td class="text-center">{{$status[$v->state]}}</td>
                         <td class="text-center">Rp<span class="harga">{{$v->harga_beli}}</span></td>
                         @if ($v->harga_bottom==null)
-                            <td class="text-center"><a href="#" class="bottom" >(Belum ditentukan)</a></td>
+                            <td class="text-center"><a href="#" class="bottom" data-id="{{$v->id}}">(Belum ditentukan)</a></td>
                         @else
                             <td class="text-center">Rp<span class="harga">{{$v->harga_bottom}}</span></td>
                         @endif
                         @if ($v->harga_jual==null)
-                            <td class="text-center"><a href="#" class="hJual" >(Belum ditentukan)</a></td>
+                            <td class="text-center"><a href="#" class="hJual" data-id="{{$v->id}}">(Belum ditentukan)</a></td>
                         @else
                             <td class="text-center">Rp<span class="harga">{{$v->harga_jual}}</span></td>
                         @endif
@@ -64,6 +64,60 @@
             </tbody>
         </table>
     </div>
+    
+    
+    <!-- Modal bottom -->
+    <div class="modal fade" id="bottomSet" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="bottomSetLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="bottomSetLabel">Set Harga Bottom</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="setBottom">
+                    <input type="text" hidden id="id_mobil" />
+                    <div class="mb-3">
+                        <label for="iBottom">Harga Bottom</label>
+                        <input type="text" class="form-control border" id="iBottom" class="harga" placeholder="Rp" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-primary" onclick="submitBottom()" id="submitBottom">Simpan</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Harga Jual -->
+    <div class="modal fade" id="hJualSet" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="hJualSetLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="hJualSetLabel">Set Harga Jual</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="setHjual">
+                    <input type="text" hidden id="id_mobil2" />
+                    <div class="mb-3">
+                        <label for="iHjual">Harga Jual</label>
+                        <input type="text" class="form-control border" id="iHjual" class="harga" placeholder="Rp" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-primary" onclick="submitHjual()" id="submitHjual">Simpan</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+
 
     <!-- Modal QC -->
     <div class="modal fade" id="hasilQC" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="hasilQCLabel" aria-hidden="true">
@@ -670,6 +724,7 @@
         </div>
     </div>
 
+
     <!-- Modal -->
     <div class="modal fade" id="documents" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="documentsLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -679,7 +734,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input id="filePicker" class="d-none" type="file" accept="image/*">
                     <table class="table">
                         <thead>
                             <tr>
@@ -730,13 +784,10 @@
     
     <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js" integrity="sha512-Y2IiVZeaBwXG1wSV7f13plqlmFOx8MdjuHyYFVoYzhyRr3nH/NMDjTBSswijzADdNzMyWNetbLMfOpIPl6Cv9g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 
 
     <script>
-
-        var gid = "";
-        var gcol = "";
 
         $(function () {
 
@@ -759,7 +810,115 @@
             $(this).ekkoLightbox();
         });
 
+        $('.bottom').on('click', (e) => {
+            const x = e.currentTarget;
+            const id = $(x).data('id');
 
+            $('#id_mobil').val(id);
+            
+            $('#submitBottom').attr('disabled',true);
+
+            $('#bottomSet').modal('show');
+        });
+
+        $('.hJual').on('click', (e) => {
+            const x = e.currentTarget;
+            const id = $(x).data('id');
+
+            $('#id_mobil2').val(id);
+            
+            $('#submitHjual').attr('disabled',true);
+
+            $('#hJualSet').modal('show');
+        });
+
+        function submitBottom() {
+            var y = $('#id_mobil').val();
+            var x = $('#iBottom').val();
+
+            console.log(x);
+
+            if (x!=="") {
+
+                $.ajax({
+                    type: "POST",
+                    url: "/bottom/set",
+                    data: {id:y, harga_bottom:x},
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.status=="success") {
+                            location.reload();
+                        } else {
+                            console.log(response.res);
+                            toastr.error('Gagal Menyimpan harga!');
+                        }
+                    }
+                });
+
+            } else {
+                toastr.error('Isi Harga Bottom!');
+            }
+        }
+
+
+        function submitHjual() {
+            var y = $('#id_mobil2').val();
+            var x = $('#iHjual').val();
+
+            console.log(x);
+
+            if (x!=="") {
+
+                $.ajax({
+                    type: "POST",
+                    url: "/harga/set",
+                    data: {id:y, harga_jual:x},
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.status=="success") {
+                            location.reload();
+                        } else {
+                            console.log(response.res);
+                            toastr.error('Gagal Menyimpan harga!');
+                        }
+                    }
+                });
+
+            } else {
+                toastr.error('Isi Harga Jual!');
+            }
+        }
+
+
+        $('#iBottom').on('keyup', () => {
+            var x = $('#iBottom').val();
+
+            if (x!=="") {
+                $('#submitBottom').attr('disabled',false);
+            } else {
+                $('#submitBottom').attr('disabled',true);
+            }
+        });
+
+        $('#iHjual').on('keyup', () => {
+            var x = $('#iHjual').val();
+
+            if (x!=="") {
+                $('#submitHjual').attr('disabled',false);
+            } else {
+                $('#submitHjual').attr('disabled',true);
+            }
+        });
+
+        $('#bottomSet').on('hidden.bs.modal', function () {
+            $('#setBottom')[0].reset();
+            $('#submitBottom').attr('disabled',true);
+        })
+
+        $('#hJualSet').on('hidden.bs.modal', function () {
+            $('#setHjual')[0].reset();
+            $('#submitHjual').attr('disabled',true);
+        })
 
         function hasilQC(qc) {
             $.LoadingOverlay("show");
@@ -831,7 +990,7 @@
                         $.each(response.res, function (i, v) { 
                             $('#'+i).empty();
                             if (v !== null) $('#'+i).append('<a href="assets/img/'+i+'/'+v+'" target="_blank"><i class="material-icons opacity-10">image</i></a>');
-                            else $('#'+i).append('<span><i class="material-icons opacity-10" onclick="uploadDoc(\''+id+'\',\''+i+'\')">upload</i></span>')
+                            else $('#'+i).append('<span><i class="material-icons opacity-10" style="color:red">close</i></span>')
                         });
 
                         $('#documents').modal('show');
@@ -841,41 +1000,6 @@
                 }
             });
         }
-
-        function uploadDoc(x,y) {
-            gid = x;
-            gcol = y;
-
-            $('#filePicker').trigger('click');
-        }
-
-        $('#filePicker').change( function (e) { 
-            $.LoadingOverlay("show");
-            var data = new FormData();
-            var file = this.files[0];
-
-            data.append('id',gid);
-            data.append('col',gcol);
-            data.append('file',file);
-
-            $.ajax({
-                type: "post",
-                url: "/dokumen/put",
-                data: data,
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    if (response.status=="success") {
-                        $.LoadingOverlay("hide");
-                        location.reload();
-                    } else {
-                        $.LoadingOverlay("hide");
-                        console.log(response.res);
-                    }
-                }
-            });
-
-        });
 
     </script>
     

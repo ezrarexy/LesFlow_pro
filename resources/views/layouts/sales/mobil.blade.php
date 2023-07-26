@@ -14,7 +14,7 @@
 @endphp
 
 @section('style')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" integrity="sha512-Velp0ebMKjcd9RiCoaHhLXkR1sFoCCWXNp6w4zj1hfMifYB5441C+sKeBl/T/Ka6NjBiRfBBQRaQq65ekYz3UQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 @endsection
 
 
@@ -30,7 +30,6 @@
                     <th>Tahun</th>
                     <th>Nomor Polisi</th>
                     <th>Status</th>
-                    <th>Harga Beli</th>
                     <th>Bottom</th>
                     <th>Harga Jual</th>
                     <th>Tindakan</th>
@@ -44,26 +43,27 @@
                         <td class="text-center">{{$v->tahun}}</td>
                         <td class="text-center">{{$v->nomor_polisi}}</td>
                         <td class="text-center">{{$status[$v->state]}}</td>
-                        <td class="text-center">Rp<span class="harga">{{$v->harga_beli}}</span></td>
                         @if ($v->harga_bottom==null)
-                            <td class="text-center"><a href="#" class="bottom" >(Belum ditentukan)</a></td>
+                            <td class="text-center"><a href="#" class="bottom" data-id="{{$v->id}}">(Belum ditentukan)</a></td>
                         @else
                             <td class="text-center">Rp<span class="harga">{{$v->harga_bottom}}</span></td>
                         @endif
                         @if ($v->harga_jual==null)
-                            <td class="text-center"><a href="#" class="hJual" >(Belum ditentukan)</a></td>
+                            <td class="text-center"><a href="#" class="hJual" data-id="{{$v->id}}">(Belum ditentukan)</a></td>
                         @else
                             <td class="text-center">Rp<span class="harga">{{$v->harga_jual}}</span></td>
                         @endif
                         <td class="text-center">
                             <button class="btn btn-info" onclick="getDoc({{$v->id}})">Dokumen</button>
-                            <button class="btn btn-success" onclick="hasilQC({{$v->id_qc_in}})">QC</button>
+                            <button class="btn btn-warning" onclick="hasilQC({{$v->id_qc_in}})">QC</button>
+                            <button class="btn btn-success" onclick="jual('{{$v->id}}','{{$v->warna}}','{{$v->transmisi}}','{{$v->tahun}}','{{$v->harga_jual}}','{{$v->harga_bottom}}')">Jual</button>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
+    
 
     <!-- Modal QC -->
     <div class="modal fade" id="hasilQC" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="hasilQCLabel" aria-hidden="true">
@@ -670,7 +670,7 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal Dokumen-->
     <div class="modal fade" id="documents" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="documentsLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -679,7 +679,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input id="filePicker" class="d-none" type="file" accept="image/*">
                     <table class="table">
                         <thead>
                             <tr>
@@ -706,6 +705,180 @@
         </div>
     </div>
 
+    <!-- Modal Jual-->
+    <div class="modal fade" id="modalJual" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalJualLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalJualLabel">Detail Mobil</h1>
+                </div>
+                <div class="modal-body">
+
+                    
+                    {{-- Form pilih mobil --}}
+                    <div id="step1" class="step">
+
+                        <div class="col-md-12">
+                        <form id="formDetailBarang">
+                            <input type="text" id="iType" class="d-none">
+                            <input type="text" id="iTypeHarga" class="d-none">
+                            <div class="mb-3 p-3 border border-3 -circle" id="divHargaJ">
+                                <table class="table">
+                                    <tr>
+                                    <td>Warna</td>
+                                    <td>:</td>
+                                    <td><span id="warna"></span></td>
+                                    </tr>
+                                    <tr>
+                                    <td>Transmisi</td>
+                                    <td>:</td>
+                                    <td><span class="text-uppercase" id="transmisi"></span></td>
+                                    </tr>
+                                    <tr>
+                                    <td>Tahun</td>
+                                    <td>:</td>
+                                    <td><span id="tahun"></span></td>
+                                    </tr>
+                                    <tr>
+                                    <td>Harga Jual</td>
+                                    <td>:</td>
+                                    <td>Rp<span id="harga"></span></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" name="nego" id="Nego" onchange="toggleNego()">
+                                <label class="form-check-label" for="Nego">Nego</label>
+                            </div>
+                            <div class="mb-3 d-none" id="divNego">
+                                <input type="number" class="form-control border" id="sBottom" hidden/>
+                                <table class="table">
+                                    <tr>
+                                    <td>Harga Bottom</td>
+                                    <td>:</td>
+                                    <td>Rp<span id="bottom"></span></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="mb-3" id="divHarga" style="display: none">
+                                <label for="iHarga" class="form-label">Harga Nego</label>
+                                <input type="text" name="hargaNego" class="form-control border" id="iHarga" >
+                            </div>
+                            
+                        </form>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="nextButton" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Jual 2-->
+    <div class="modal fade" id="modalJual2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalJualLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalJualLabel">Data Pembeli</h1>
+                </div>
+                <div class="modal-body">
+                    
+                    {{-- Form data pembeli --}}
+                    <div id="step2" class="step" >
+                        <form id="formDataPembeli">
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="customerLamaCheck" onchange="toggleCustomerLama()">
+                                <label class="form-check-label" for="customerLamaCheck">Customer Lama</label>
+                            </div>
+                            <div id="customerBaru">
+                                <div class="mb-3">
+                                <label for="namaPembeli" class="form-label">Nama Pembeli:</label>
+                                <input type="text" class="form-control border" id="namaPembeli" required>
+                                </div>
+                                <div class="mb-3">
+                                <label for="alamatPembeli" class="form-label">Alamat Pembeli:</label>
+                                <input type="text" class="form-control border" id="alamatPembeli" required>
+                                </div>
+                                <div class="mb-3">
+                                <label for="kontakPembeli" class="form-label">Nomor Telpon Pembeli:</label>
+                                <input type="text" class="form-control border" id="kontakPembeli" required>
+                                </div>
+                            </div>
+                            <div id="customerLama" style="display: none;">
+                                <div class="mb-3">
+                                <label for="customerLamaSelect" class="form-label">Customer Lama:</label>
+                                <select class="form-select" id="customerLamaSelect">
+                                    <option selected disabled>Pilih Customer Lama</option>
+                                    @foreach ($customer as $k => $v)
+                                    <option value="{{$v->id}}">{{$v->nama}}</option>              
+                                    @endforeach
+                                </select>
+                                </div>
+                            </div>
+                        
+                        </form>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="previousStep()">Kembali</button>
+                    <button type="button" class="btn btn-primary" id="submitButton" disabled onclick="submitForm()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {{-- Modal menuju SPK --}}
+    <div class="modal fade" id="modal1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal1Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modal1Label">Lanjutkan ke SPK</h1>
+                    <button type="button" class="btn-close" data-bs-target="#modalJual2" data-bs-toggle="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <span>Lanjutkan proses untuk membuat <b data-bs-toggle="tooltip" data-bs-placement="top" title="Surat Pemesanan Kendaraan">SPK</b>?</span>
+                </div>
+                <form action="{{route('spkIn')}}" method="POST" id="formSPK" class="d-none">
+                    @csrf
+                    <input type="text" name="id_spk" id="idSPK"/>
+                    <input type="text" name="id_jual" id="idJual"/>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-target="#modalJual2" data-bs-toggle="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" onclick="goSPK()">Proses</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    {{-- Modal menuju konfirmasi manager --}}
+    <div class="modal fade" id="modal2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal2Label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="modal2Label">Harga Nego dibawah Harga Bottom</h1>
+            <button type="button" class="btn-close" data-bs-target="#modalJual2" data-bs-toggle="modal"aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Harga nego akan diajukan kepada <b>Manager</b>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-target="#modalJual2" data-bs-toggle="modal">Batal</button>
+            <button type="button" class="btn btn-primary">Proses</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+
 @endsection
 
 
@@ -730,13 +903,10 @@
     
     <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js" integrity="sha512-Y2IiVZeaBwXG1wSV7f13plqlmFOx8MdjuHyYFVoYzhyRr3nH/NMDjTBSswijzADdNzMyWNetbLMfOpIPl6Cv9g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 
 
     <script>
-
-        var gid = "";
-        var gcol = "";
 
         $(function () {
 
@@ -750,16 +920,10 @@
             $('.harga').number(true,0);
             $('#iBottom').number(true,0);
             $('#iHjual').number(true,0);
+            $('#iHarga').number(true,0);
             
 
         });
-
-        $(document).on('click', '[data-toggle="lightbox"]', function(event) {
-            event.preventDefault();
-            $(this).ekkoLightbox();
-        });
-
-
 
         function hasilQC(qc) {
             $.LoadingOverlay("show");
@@ -810,6 +974,7 @@
                         $.LoadingOverlay("hide");
                         $('#hasilQC').modal('show');
                     } else {
+                        $.LoadingOverlay("hide");
                         console.log(response.res);
                     }
                 }
@@ -817,6 +982,7 @@
         }
 
         function getDoc(x) {
+            $.LoadingOverlay("show");
             const id = x;
 
             $.ajax({
@@ -829,53 +995,230 @@
                         console.log(response.res);
 
                         $.each(response.res, function (i, v) { 
-                            $('#'+i).empty();
+                            $('#'+i).empty();0
                             if (v !== null) $('#'+i).append('<a href="assets/img/'+i+'/'+v+'" target="_blank"><i class="material-icons opacity-10">image</i></a>');
-                            else $('#'+i).append('<span><i class="material-icons opacity-10" onclick="uploadDoc(\''+id+'\',\''+i+'\')">upload</i></span>')
+                            else $('#'+i).append('<span><i class="material-icons opacity-10" style="color:red">close</i></span>')
+                            $.LoadingOverlay("hide");
                         });
 
                         $('#documents').modal('show');
                     } else {
+                        $.LoadingOverlay("hide");
                         console.log(response.res);
                     }
                 }
             });
         }
 
-        function uploadDoc(x,y) {
-            gid = x;
-            gcol = y;
+        function jual(a,b,c,d,e,f) {
+            $('#iType').val(a);
 
-            $('#filePicker').trigger('click');
+            $('#iTypeHarga').val(e);
+
+            $('#harga').text(e);
+
+            $('#warna').text(b);
+
+            $('#transmisi').text(c);
+
+            $('#tahun').text(d);
+
+            $('#bottom').text(f);
+
+            $('#sBottom').val(f);
+
+            $('#harga').number(true,0);
+
+            $('#bottom').number(true,0);
+
+            $('#modalJual').modal('show');
         }
 
-        $('#filePicker').change( function (e) { 
-            $.LoadingOverlay("show");
-            var data = new FormData();
-            var file = this.files[0];
 
-            data.append('id',gid);
-            data.append('col',gcol);
-            data.append('file',file);
+        // =================================================== Jual Mobil ========================================
+            var BellowBottom = false;
 
-            $.ajax({
-                type: "post",
-                url: "/dokumen/put",
-                data: data,
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    if (response.status=="success") {
-                        $.LoadingOverlay("hide");
-                        location.reload();
+            // ========================== Listener ==============================
+
+
+            $("#namaPembeli, #alamatPembeli, #kontakPembeli").on("input", function() {
+                validateFormDataPembeli();
+            });
+
+            $("#customerLamaSelect").on("change", function() {
+                validateFormDataPembeli();
+            });
+
+
+            $('#iHarga').keyup(function () {
+                const hargaNego = BigInt($('#iHarga').val()); 
+
+                const bottom = BigInt($('#sBottom').val());
+
+                if (hargaNego < bottom) {
+                    BellowBottom = true;
+                } else {
+                    BellowBottom = false;
+                }
+
+                validateFormDetailBarang();
+            });
+
+
+
+            // =========================== Function ================================
+            function toggleCustomerLama() {
+                if ($("#customerLamaCheck").is(":checked")) {
+                    $("#customerBaru").hide();
+                    $("#customerLama").show();
+                    $("#submitButton").prop("disabled", true);
+                    $("#namaPembeli").val("");
+                    $("#alamatPembeli").val("");
+                } else {
+                    $("#customerLama").hide();
+                    $("#customerBaru").show();
+                    $("#submitButton").prop("disabled", true);
+                    $('#customerLamaSelect>option:eq(0)').prop('selected', true);
+                }
+            }
+
+            function toggleNego() {
+                if ($("#Nego").is(":checked")) {
+                    $("#divHarga").show();
+                    $("#nextButton").prop("disabled", true);
+                    $("#divNego").removeClass('d-none');
+                } else {
+                    $("#divHarga").hide();
+                    validateFormDetailBarang();
+                    $("#divNego").addClass('d-none');
+                }
+            }
+
+            function validateFormDetailBarang() {
+
+
+                if ($("#Nego").is(":checked")) {
+                    if ($('#iHarga').val()) {
+                        $("#nextButton").prop("disabled", false);
                     } else {
-                        $.LoadingOverlay("hide");
-                        console.log(response.res);
+                        $("#nextButton").prop("disabled", true);
+                    }
+                } else {
+                    $("#nextButton").prop("disabled", false);
+                }
+                    
+
+            }
+
+            function validateFormDataPembeli() {
+                if ($("#customerLamaCheck").is(":checked")) {
+                    var customerLamaSelect = $("#customerLamaSelect").val();
+
+                    if (customerLamaSelect) {
+                    $("#submitButton").prop("disabled", false);
+                    } else {
+                    $("#submitButton").prop("disabled", true);
+                    }
+                } else {
+                    var namaPembeli = $("#namaPembeli").val();
+                    var alamatPembeli = $("#alamatPembeli").val();
+                    var kontakPembeli = $("#kontakPembeli").val();
+
+                    if (namaPembeli && alamatPembeli && kontakPembeli) {
+                    $("#submitButton").prop("disabled", false);
+                    } else {
+                    $("#submitButton").prop("disabled", true);
                     }
                 }
-            });
+            }
 
-        });
+            function nextStep() {
+                $("#modalJual").modal('toggle');
+                $("#modalJual2").modal('toggle');
+            }
+
+            function previousStep() {
+                $("#modalJual2").modal('toggle');
+                $("#modalJual").modal('toggle');
+            }
+
+            function submitForm() {
+
+                if (BellowBottom) {
+                    $('#modalJual2').modal('toggle');
+                    $('#modal2').modal('toggle');
+                } else {
+                    $('#modalJual2').modal('toggle');
+                    $('#modal1').modal('toggle');
+                }
+
+            }
+
+            function goSPK() {
+                var data = {};
+                data.id_mobil = $("#iType").val();
+                data.nego = $("#iHarga").val();
+                data.harga = $("#iTypeHarga").val();
+
+                if ($("#customerLamaCheck").is(":checked")) {
+                    data.id_customer = $("#customerLamaSelect").val();
+                } else {
+                    data.namaCustomer = $("#namaPembeli").val();
+                    data.alamatCustomer = $("#alamatPembeli").val();
+                    data.kontakCustomer = $("#kontakPembeli").val();
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/jual/upperBottom",
+                    data: data,
+                    dataType: "json",
+                    success: function (response) {
+                    if (response.status=="success") {
+                        toastr.success(response.res);
+                        $('#idSPK').val(response.res.id_spk);
+                        $('#idJual').val(response.res.id_jual);
+                        $('#formSPK').submit();
+                        
+                    } else {
+                        toastr.error(response.res);
+                        console.log(response.res);
+                    }
+                    }
+                });
+
+            }
+
+            function askBottom() {
+                var data = {};
+                data.id_mobil = $("#iType").val();
+                data.nego = $("#iHarga").val();
+                data.harga = $("#iType").find(':selected').data('harga');
+
+                if ($("#customerLamaCheck").is(":checked")) {
+                    data.id_customer = $("#customerLamaSelect").val();
+                } else {
+                    data.namaCustomer = $("#namaPembeli").val();
+                    data.alamatCustomer = $("#alamatPembeli").val();
+                    data.kontakCustomer = $("#kontakPembeli").val();
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/jual/bellowBottom",
+                    data: data,
+                    dataType: "json",
+                    success: function (response) {
+                    if (response.status) {
+                        toastr.success("   ");
+                    } else {
+                        toastr.error(response.res);
+                    }
+                    }
+                });
+            }
+
+        // ===========================================================================================
 
     </script>
     

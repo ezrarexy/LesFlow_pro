@@ -62,7 +62,9 @@ class JBController extends Controller
                 'nomor_polisi' => $req->nopol,
                 'harga_beli' => str_replace(',','',$req->harga),
                 'kondisi' => $req->kond,
-                'node' => 2,
+                'state' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
             ]);            
         } else {
             $id = DB::table('mobils')->insertGetId([
@@ -80,7 +82,9 @@ class JBController extends Controller
                 'nomor_mesin' => $req->nomes,
                 'nomor_polisi' => $req->nopol,
                 'harga_beli' => str_replace(',','',$req->harga),
-                'kondisi' => $req->kond
+                'kondisi' => $req->kond,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
             ]);
         }
 
@@ -94,11 +98,20 @@ class JBController extends Controller
 
         $trans = new transaksiBeli;
 
-        $trans->id_mobil = $id;
-        $trans->id_user = Auth::user()->id;
-        $trans->nama = $req->nama;
-        $trans->harga = str_replace(',','',$req->harga);
-        $trans->save();
+        if (Auth::user()->id_role==2) {
+            $trans->id_mobil = $id;
+            $trans->id_user = Auth::user()->id;
+            $trans->nama = $req->nama;
+            $trans->harga = str_replace(',','',$req->harga);
+            $trans->node = 2;
+            $trans->save();
+        } else {
+            $trans->id_mobil = $id;
+            $trans->id_user = Auth::user()->id;
+            $trans->nama = $req->nama;
+            $trans->harga = str_replace(',','',$req->harga);
+            $trans->save();
+        }
 
         return redirect()->route('home');
 
@@ -126,88 +139,141 @@ class JBController extends Controller
         $id_SPK = "";
         $id_jual = "";
 
-        if (isset($req->id_customer)) {
-            $id_customer = $req->id_customer;
-        } else {
-            $id_customer = DB::table('customers')->insertGetId([
-                'nama' => $req->namaCustomer,
-                'alamat' => $req->alamatCustomer,
-                'telp' => $req->kontakCustomer,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ]);
+        try {
+            DB::beginTransaction();
+                if (isset($req->id_customer)) {
+                    $id_customer = $req->id_customer;
+                } else {
+                    $id_customer = DB::table('customers')->insertGetId([
+                        'nama' => $req->namaCustomer,
+                        'alamat' => $req->alamatCustomer,
+                        'telp' => $req->kontakCustomer,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
+                }
+
+                $id_SPK = DB::table('spks')->insertGetId([
+                    'id_customer' => $id_customer,
+                    'id_mobil' => $req->id_mobil,
+                    'harga_jadi' => isset($req->nego) ? $req->nego : $req->harga,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ]);
+
+                $id_jual = DB::table('transaksi_juals')->insertGetId([
+                    'id_sales' => Auth::user()->id,
+                    'id_customer' => $id_customer,
+                    'id_mobil' => $req->id_mobil,
+                    'harga' => isset($req->nego) ? $req->nego : $req->harga,
+                    'id_spk' => $id_SPK,
+                    'node' => isset($req->nego) ? 1 : 2,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ]);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response(['status'=>'fail','res'=>$e]);    
         }
-
-        $id_SPK = DB::table('spks')->insertGetId([
-            'id_customer' => $id_customer,
-            'id_mobil' => $req->id_mobil,
-            'harga_jadi' => isset($req->nego) ? $req->nego : $req->harga,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now()
-        ]);
-
-        $id_jual = DB::table('transaksi_juals')->insertGetId([
-            'id_sales' => Auth::user()->id,
-            'id_customer' => $id_customer,
-            'id_mobil' => $req->id_mobil,
-            'harga' => isset($req->nego) ? $req->nego : $req->harga,
-            'id_spk' => $id_SPK,
-            'node' => isset($req->nego) ? 1 : 2
-        ]);
 
 
         return response(['status'=>'success','res'=>['id_spk'=>$id_SPK,'id_jual'=>$id_jual]]);
     }
 
     public function JualB(Request $req) {
-        
+        $id_customer = "";
+        $id_SPK = "";
+        $id_jual = "";
+
+
+        try {
+            DB::beginTransaction();
+                if (isset($req->id_customer)) {
+                    $id_customer = $req->id_customer;
+                } else {
+                    $id_customer = DB::table('customers')->insertGetId([
+                        'nama' => $req->namaCustomer,
+                        'alamat' => $req->alamatCustomer,
+                        'telp' => $req->kontakCustomer,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
+                }
+
+                $id_SPK = DB::table('spks')->insertGetId([
+                    'id_customer' => $id_customer,
+                    'id_mobil' => $req->id_mobil,
+                    'harga_jadi' => isset($req->nego) ? $req->nego : $req->harga,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ]);
+
+                $id_jual = DB::table('transaksi_juals')->insertGetId([
+                    'id_sales' => Auth::user()->id,
+                    'id_customer' => $id_customer,
+                    'id_mobil' => $req->id_mobil,
+                    'harga' => isset($req->nego) ? $req->nego : $req->harga,
+                    'id_spk' => $id_SPK,
+                    'node' => 0,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ]);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response(['status'=>'fail','res'=>$e]);    
+        }
+
+
+        return response(['status'=>'success','res'=>['id_spk'=>$id_SPK,'id_jual'=>$id_jual]]);
     }
 
     public function InputSPK(Request $req) {
         $fileKTPnama = "";
 
-        $jual = transaksiJual::find($req->input('id'));
+        try {
+            $jual = transaksiJual::find($req->input('id'));
 
-        $cust = Customer::find($jual->id_customer);
+            $cust = Customer::find($jual->id_customer);
 
-        $spk = Spk::find($jual->id_spk);
+            $spk = Spk::find($jual->id_spk);
 
-        $cust->nik = $req->input('nomor_ktp');
-        $cust->jk = $req->input('jenis_kelamin');
-        $cust->dob = $req->input('tanggal_lahir');
-        $cust->id_agama = $req->input('agama');
-        $cust->instagram = $req->input('instagram');
-        $cust->facebook = $req->input('facebook');
+            $cust->nik = $req->input('nomor_ktp');
+            $cust->jk = $req->input('jenis_kelamin');
+            $cust->dob = $req->input('tanggal_lahir');
+            $cust->id_agama = $req->input('agama');
+            $cust->instagram = $req->input('instagram');
+            $cust->facebook = $req->input('facebook');
 
-        $spk->nama_pemakai = $req->input('namaP');
-        $spk->alamat = $req->input('alamatP');
-        $spk->telp = $req->input('telP');
-        $spk->id_jenis_pembayaran = $req->input('jenis_pembayaran');
-        if ($req->input('jenis_pembayaran')==2) {
-            $spk->id_leasing = $req->input('leasing');
-            $spk->DP = $req->input('total_dp');
-            $spk->cicilan = $req->input('angsuran');
-            $spk->tenor = $req->input('tenor');
+            $spk->nama_pemakai = $req->input('namaP');
+            $spk->alamat = $req->input('alamatP');
+            $spk->telp = $req->input('telP');
+            $spk->id_jenis_pembayaran = $req->input('jenis_pembayaran');
+            if ($req->input('jenis_pembayaran')==2) {
+                $spk->id_leasing = $req->input('leasing');
+                $spk->DP = $req->input('total_dp');
+                $spk->cicilan = $req->input('angsuran');
+                $spk->tenor = $req->input('tenor');
+            }
+            if ($req->input('asuransi')==1) {
+                $spk->id_asuransi = $req->input('id_asuransi');
+                $spk->id_jenis_asuransi = $req->input('jenisAsuransi');
+                $spk->biaya_asuransi = $req->input('biayaAsuransi');
+                if ( $req->input('tjh3') != null ) {
+                    $spk->asuransi_jiwa = $req->input('tjh3');
+                }
+                if ( $req->input('asuransi_jiwa') != null ) {
+                    $spk->asuransi_jiwa = $req->input('asuransi_jiwa');
+                }
+                if ( $req->input('asuransi_kebakaran') != null ) {
+                    $spk->asuransi_jiwa = $req->input('asuransi_jiwa');
+                }
+            }
+        } catch (Exception $e) {
+            return response(['status'=>'fail','res'=>$e]);
         }
-        if ($req->input('asuransi')==1) {
-            $spk->id_asuransi = $req->input('id_asuransi');
-            $spk->id_jenis_asuransi = $req->input('jenisAsuransi');
-            $spk->biaya_asuransi = $req->input('biayaAsuransi');
-            if ( $req->input('tjh3') != null ) {
-                $spk->asuransi_jiwa = $req->input('tjh3');
-            }
-            if ( $req->input('asuransi_jiwa') != null ) {
-                $spk->asuransi_jiwa = $req->input('asuransi_jiwa');
-            }
-            if ( $req->input('asuransi_kebakaran') != null ) {
-                $spk->asuransi_jiwa = $req->input('asuransi_jiwa');
-            }
-        }
-        $spk->node = 1;
-
-        $jual->id_jenis_pembayaran = $req->input('jenis_pembayaran');
-        $jual->id_jenis_asuransi = $req->input('jenisAsuransi');
-        $jual->node = 6;
+        
 
         // Mengambil file gambar
         if ($req->hasFile('photo_ktp')) {
@@ -229,6 +295,12 @@ class JBController extends Controller
 
         // Simpan
         try {
+            $spk->node = 1;
+
+            $jual->id_jenis_pembayaran = $req->input('jenis_pembayaran');
+            $jual->id_jenis_asuransi = $req->input('jenisAsuransi');
+            $jual->node = 6;
+
             DB::beginTransaction();
                 $cust->save();
                 $spk->save();
@@ -242,7 +314,7 @@ class JBController extends Controller
 
 
 
-        return response(['status'=>'success','res'=> $req->input('asuransi_jiwa') != null  ]);
+        return response(['status'=>'success']);
     }
 
 

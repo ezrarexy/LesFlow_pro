@@ -34,6 +34,8 @@
                             @elseif ($v->node==5)
                                 <button class="btn btn-secondary">Ganti Metode Bayar</button>
                                 <button class="btn btn-primary">Batalkan</button>
+                            @elseif ($v->node==6)
+                                <button class="btn btn-secondary">Cetak SPK</button>
                             @endif
                         </td>
                     </tr>

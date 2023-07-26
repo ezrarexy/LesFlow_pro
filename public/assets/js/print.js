@@ -89,7 +89,7 @@ function ttBPKB(data) {
     doc.text("Yang menerima,", 30, 115);
     doc.text("(\t\t\t\t  )", 25, 138);
 
-    doc.text("Palembang, ", 125, 110);
+    doc.text("Palembang, "+data.today, 125, 110);
     doc.text("Yang menyerahkan,", 125, 115);
     doc.text("(\t\t\t\t  )", 123, 138);
 
@@ -254,19 +254,22 @@ function SPK(data) {
     // Asuransi
     // doc.text("- Tunai", 137, 210);
     // doc.text("- Kredit", 137, 210);
-    doc.text("- "+data.jenis_asuransi, 137, 210);
-    // doc.text("- Kombinasi", 137, 218);
-    // doc.text("- Allrisk", 137, 218);
-    doc.text("- "+data.perusahaan_asuransi, 137, 218);
-    doc.text("- Biaya Asuransi Rp. "+$.number(data.biaya_asuransi), 137, 226);
+    if (typeof(data.jenis_asuransi) != "undefined" && data.jenis_asuransi !== null) {
+        doc.text("- "+data.jenis_asuransi, 137, 210);
+        // doc.text("- Kombinasi", 137, 218);
+        // doc.text("- Allrisk", 137, 218);
+        doc.text("- "+data.perusahaan_asuransi, 137, 218);
+        doc.text("- Biaya Asuransi Rp. "+$.number(data.biaya_asuransi), 137, 226);
+    }
+
     if (typeof(data.tjh3) != "undefined" && data.tjh3 !== null) {
         doc.text("- Tanggung jawab pihak ke-3 (TJH 3)", 137, 234);
         doc.text("Rp. ", 139, 242);
     }
-    if (typeof(data.asuransi_jiwa) != "undefined" && data.asuransi_jiwa !== null) {
+    if (data.asuransi_jiwa !== 0 ) {
         doc.text("- Asuransi Jiwa", 137, 250);
     }
-    if (typeof(data.asuransi_kebakaran) != "undefined" && data.asuransi_kebakaran !== null) {
+    if (data.asuransi_kebakaran !== 0) {
         doc.text("- Asuransi Kebakaran, Terorisme,", 137, 258);
         doc.text("Bencana Alam", 139, 266);
     }

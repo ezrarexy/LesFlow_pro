@@ -76,7 +76,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="iPajak">Pajak</label>
-                            <input type="text" name="pajak" id="iPajak" class="form-control isian" required/>
+                            <input type="date" name="pajak" id="iPajak" class="form-select isian" required/>
                         </div>
                     </form>
                     <form id="goNext" action="{{route('periksa')}}" method="POST">

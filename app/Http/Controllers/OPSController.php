@@ -40,7 +40,9 @@ class OPSController extends Controller
         $pdqc->id_qc = $id;
         $pdqc->save();
 
-        $mobil->id_qc_out = $id;
+        if ($req->state==1) $mobil->id_qc_in = $id;
+        else $mobil->id_qc_out = $id;
+        
         $mobil->save();
 
         return redirect()->route('periksaMasuk');

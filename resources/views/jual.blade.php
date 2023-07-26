@@ -157,7 +157,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-primary">Prses</button>
+        <button type="button" class="btn btn-primary">Proses</button>
       </div>
     </div>
   </div>
@@ -187,38 +187,7 @@
     });
 
 
-      // ========================== Listener ==============================
-    $("#iType").on("change", function(x) {
-
-      $('#harga').text($("#iType").find(':selected').data('harga'));
-
-      $('#warna').text($("#iType").find(':selected').data('warna'));
-
-      $('#transmisi').text($("#iType").find(':selected').data('transmisi'));
-
-      $('#tahun').text($("#iType").find(':selected').data('tahun'));
-
-      $('#bottom').text($("#iType").find(':selected').data('bottom'));
-
-      $('#sBottom').val($("#iType").find(':selected').data('bottom'));
-
-      $('#harga').number(true,0);
-
-      $('#bottom').number(true,0);
-
-      $('#divHargaJ').removeClass('d-none');
-
-      validateFormDetailBarang();
-    });
-
-    $("#namaPembeli, #alamatPembeli, #kontakPembeli").on("input", function() {
-    validateFormDataPembeli();
-    });
-
-    $("#customerLamaSelect").on("change", function() {
-    validateFormDataPembeli();
-    });
-
+    // ========================== Listener ==============================
 
     $('#iMerk').on('change',() => {
       $('#divHargaJ').addClass('d-none');
@@ -256,6 +225,41 @@
       });
 
     });
+
+      
+    $("#iType").on("change", function(x) {
+
+      $('#harga').text($("#iType").find(':selected').data('harga'));
+
+      $('#warna').text($("#iType").find(':selected').data('warna'));
+
+      $('#transmisi').text($("#iType").find(':selected').data('transmisi'));
+
+      $('#tahun').text($("#iType").find(':selected').data('tahun'));
+
+      $('#bottom').text($("#iType").find(':selected').data('bottom'));
+
+      $('#sBottom').val($("#iType").find(':selected').data('bottom'));
+
+      $('#harga').number(true,0);
+
+      $('#bottom').number(true,0);
+
+      $('#divHargaJ').removeClass('d-none');
+
+      validateFormDetailBarang();
+    });
+
+    $("#namaPembeli, #alamatPembeli, #kontakPembeli").on("input", function() {
+    validateFormDataPembeli();
+    });
+
+    $("#customerLamaSelect").on("change", function() {
+    validateFormDataPembeli();
+    });
+
+
+
 
     $('#iHarga').keyup(function () {
       const hargaNego = BigInt($('#iHarga').val()); 

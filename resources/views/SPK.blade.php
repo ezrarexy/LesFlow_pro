@@ -255,6 +255,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/id.min.js"></script>
     <script src="{{asset('assets/js/print.js')}}"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.8/ScrollMagic.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.8/plugins/animation.gsap.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+
     <script>
 
         $(document).ready(function() {
@@ -425,6 +431,9 @@
                             } else {
                                 console.log(response.res);
                             }
+                        },
+                        error: function (response) {
+                            console.log(response);
                         }
                     });
                 } catch (error) {
@@ -448,14 +457,14 @@
                 dataType: "json",
                 success: function (response) {
                     if (response.status=="success") {
+                        console.log(response.data);
+
                         var today = new Date();
                         var day = today.getDate();
                         var month = today.getMonth() + 1;
                         var year = today.getFullYear();
 
                         response.data.tanggal = moment(today).locale('id').format('DD MMMM YYYY');
-
-                        console.log(response.data);
 
                         SPK(response.data);
                     } else {

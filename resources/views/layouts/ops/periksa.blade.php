@@ -708,7 +708,7 @@
                                     <td>Engine Check</td>
                                     <td class="ps-5">
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input" {{ $dqc->stnk == 1 ? 'checked="checked"' : '' }} type="checkbox" name="sensor_engine_check" onchange="qcClick(this,{{$dqc->id}})" />
+                                            <input class="form-check-input" {{ $dqc->sensor_engine_check == 1 ? 'checked="checked"' : '' }} type="checkbox" name="sensor_engine_check" onchange="qcClick(this,{{$dqc->id}})" />
                                         </div>
                                     </td>
                                 </tr>
@@ -716,7 +716,7 @@
                                     <td>ABS</td>
                                     <td class="ps-5">
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input" {{ $dqc->stnk == 1 ? 'checked="checked"' : '' }} type="checkbox" name="sensor_abs" onchange="qcClick(this,{{$dqc->id}})" />
+                                            <input class="form-check-input" {{ $dqc->sensor_abs == 1 ? 'checked="checked"' : '' }} type="checkbox" name="sensor_abs" onchange="qcClick(this,{{$dqc->id}})" />
                                         </div>
                                     </td>
                                 </tr>
@@ -724,7 +724,7 @@
                                     <td>Rem Tangan</td>
                                     <td class="ps-5">
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input" {{ $dqc->stnk == 1 ? 'checked="checked"' : '' }} type="checkbox" name="sensor_rem_tangan" onchange="qcClick(this,{{$dqc->id}})" />
+                                            <input class="form-check-input" {{ $dqc->sensor_rem_tangan == 1 ? 'checked="checked"' : '' }} type="checkbox" name="sensor_rem_tangan" onchange="qcClick(this,{{$dqc->id}})" />
                                         </div>
                                     </td>
                                 </tr>
@@ -732,7 +732,7 @@
                                     <td>Tekanan Oli</td>
                                     <td class="ps-5">
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input" {{ $dqc->stnk == 1 ? 'checked="checked"' : '' }} type="checkbox" name="sensor_tekanan_oli" onchange="qcClick(this,{{$dqc->id}})" />
+                                            <input class="form-check-input" {{ $dqc->sensor_tekanan_oli == 1 ? 'checked="checked"' : '' }} type="checkbox" name="sensor_tekanan_oli" onchange="qcClick(this,{{$dqc->id}})" />
                                         </div>
                                     </td>
                                 </tr>
@@ -740,7 +740,7 @@
                                     <td>Accu</td>
                                     <td class="ps-5">
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input" {{ $dqc->stnk == 1 ? 'checked="checked"' : '' }} type="checkbox" name="sensor_accu" onchange="qcClick(this,{{$dqc->id}})" />
+                                            <input class="form-check-input" {{ $dqc->sensor_accu == 1 ? 'checked="checked"' : '' }} type="checkbox" name="sensor_accu" onchange="qcClick(this,{{$dqc->id}})" />
                                         </div>
                                     </td>
                                 </tr>

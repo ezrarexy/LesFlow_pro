@@ -91,7 +91,7 @@
 
         @include('tmp.topbar')
 
-        <div class="container-fluid py-4 pt-5">        
+        <div class="container-fluid py-4 pt-5" style="overflow-x: auto; white-space:nowrap">        
 
             @yield('content')
 
@@ -182,10 +182,11 @@
                 </div>
                 <hr class="horizontal dark my-1">
                 
-                
-                <a class="btn bg-gradient-info w-100" href="{{route('jual')}}">Jual</a>
-                
-                <hr class="horizontal dark my-1">
+                @if (\Auth::user()->id_role!==2)
+                    <a class="btn bg-gradient-info w-100" href="{{route('jual')}}">Jual</a>
+                    
+                    <hr class="horizontal dark my-1">
+                @endif
                 
                 <a class="btn btn-outline-dark w-100" href="{{route('beli')}}">Beli</a>
             </div>
