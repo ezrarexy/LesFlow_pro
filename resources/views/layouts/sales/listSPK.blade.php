@@ -1,6 +1,6 @@
 
 <div class="card">
-    <div class="card-body">
+    <div class="card-body" style="overflow-x: auto; white-space:nowrap">
         <h4 class="card-title"></h4>
         <table id="TdataT" class="table table-stripped justify-content-center">
             <thead>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Asuransi;
 use App\Models\Bengkel;
 use App\Models\Customer;
+use App\Models\detail_perbaikan;
 use App\Models\DetailQc;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -21,6 +22,8 @@ use App\Models\transaksiBeli;
 use App\Models\transaksiJual;
 
 use Auth;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class pageController extends Controller
 {
@@ -233,7 +236,7 @@ class pageController extends Controller
             $pej = $this->PageObj("Periksa Mobil Masuk","/periksa/masuk");
             $notif = $this->UserNotif();
 
-            $mobil = Mobil::select('mobils.*','merks.nama as merk')->join('merks','mobils.id_merk','=','merks.id')->where('state','=','1')->get();
+            $mobil = Mobil::select('mobils.*','merks.nama as merk')->join('merks','mobils.id_merk','=','merks.id')->where('state','=','1')->where('id_qc_in',null)->get();
 
             return view('layouts.ops.periksaMasuk')->with('pej',$pej)->with('notif',$notif)->with('mobil',$mobil);
         }
@@ -242,7 +245,7 @@ class pageController extends Controller
             $pej = $this->PageObj("Periksa Mobil Keluar","/periksa/keluar");
             $notif = $this->UserNotif();
 
-            $mobil = Mobil::select('mobils.*','merks.nama as merk')->join('merks','mobils.id_merk','=','merks.id')->where('state','=','7')->get();
+            $mobil = Mobil::select('mobils.*','merks.nama as merk')->join('merks','mobils.id_merk','=','merks.id')->where('state','=','7')->where('id_qc_out',null)->get();
 
             return view('layouts.ops.periksaKeluar')->with('pej',$pej)->with('notif',$notif)->with('mobil',$mobil);
         }
@@ -257,6 +260,8 @@ class pageController extends Controller
                 'merks.nama as merk',
                 'mobils.tahun',
                 'mobils.nomor_polisi',
+                'mobils.state',
+                'mobils.status',
                 'mobils.kondisi',
                 'mobils.odometer',
                 'mobils.isi_silinder',
@@ -294,6 +299,49 @@ class pageController extends Controller
             return view('layouts.ops.periksa')->with('pej',$pej)->with('notif',$notif)->with('qc',$qc)->with('dqc',$dqc)->with('pdqc',$pdqc)->with('mobil',$mobil);
         }
 
+        public function Periksa2(Request $req) {
+            $notif = $this->UserNotif();
+
+            $qc = Qc::find($req->id);
+            $dqc = DetailQc::where('id_qc','=',$req->id)->first();
+            $pdqc = PendukungDetailQc::where('id_qc','=',$req->id)->first();
+            $mobil = Mobil::select('mobils.*','merks.nama as merk','jenis.nama as jenis')
+            ->join('merks','mobils.id_merk','=','merks.id')
+            ->join('jenis','mobils.id_jenis','=','jenis.id')
+            ->where('mobils.id',$qc->id_mobil)->first();
+
+            $dqc->ban_kiri_depan = explode('|',$dqc->ban_kiri_depan);
+            $dqc->ban_kiri_belakang = explode('|',$dqc->ban_kiri_belakang);
+            $dqc->ban_kanan_depan = explode('|',$dqc->ban_kanan_depan);
+            $dqc->ban_kanan_belakang = explode('|',$dqc->ban_kanan_belakang);
+
+            $pej = $this->PageObj("Pemeriksaan(2)". $mobil['merk'] ." ". $mobil['nama'],"/pemeriksaan2");
+
+            return view('layouts.ops.periksa2')->with('pej',$pej)->with('notif',$notif)->with('qc',$qc)->with('dqc',$dqc)->with('pdqc',$pdqc)->with('mobil',$mobil);
+        }
+
+        public function Repair() {
+            $pej = $this->PageObj("Perbaikan","/repair");
+            $notif = $this->UserNotif();
+            
+            $mobil = Mobil::select('mobils.*','mobils.nama as type','merks.nama as merk','qcs.*','perbaikans.node as node_perbaikan')
+            ->join('merks','mobils.id_merk','merks.id')
+            ->join('qcs','mobils.id_qc_in','qcs.id')
+            ->join('perbaikans','mobils.id_perbaikan','perbaikans.id')
+            ->where('state',6)->get();
+
+            foreach ($mobil as $k => $v) {
+                $dp = detail_perbaikan::select('detail_perbaikans.*','bengkels.nama as bengkel')->join('bengkels','detail_perbaikans.id_bengkel','bengkels.id')->where('id_perbaikan',$v->id_perbaikan)->get();
+                $mobil[$k]->detail_perbaikan = $dp;
+            }
+
+            $jenis = JenisBengkel::all();
+
+            return view('layouts.ops.repair')->with('pej',$pej)->with('notif',$notif)->with('data',$mobil)->with('jenis_bengkel',$jenis);
+        }
+
+
+
         public function DeliveryOrder(Request $req) {
             $pej = $this->PageObj("Delivery Order","/deliveryList");
             $notif = $this->UserNotif();
@@ -316,6 +364,7 @@ class pageController extends Controller
                 ->join('spks','transaksi_juals.id_spk','spks.id')
                 ->where('transaksi_juals.node','=',7)
                 ->where('mobils.state',9)
+                ->where('mobils.status','ready')
                 ->get();
 
                 
@@ -493,8 +542,8 @@ class pageController extends Controller
         }
 
         public function notifOPS() {
-            $n = Mobil::select('updated_at')->where('state','=','1')->orderBy('updated_at', 'desc')->get();
-            $o = Mobil::select('updated_at')->where('state','=','7')->orderBy('updated_at', 'desc')->get();
+            $n = Mobil::select('updated_at')->where('state','=','1')->where('id_qc_in',null)->orderBy('updated_at', 'desc')->get();
+            $o = Mobil::select('updated_at')->where('state','=','7')->where('id_qc_out',null)->orderBy('updated_at', 'desc')->get();
 
             $not = app()->make('stdClass');
 
@@ -506,24 +555,24 @@ class pageController extends Controller
                 if ( count($n) > 0 && count($o) > 0) {
                     if ($n[0]->updated_at->gt($o[0]->updated_at)) {
                         $notif[0][0] = "masuk";
-                        $notif[0][1] = Mobil::where('state','=','1')->orderBy('updated_at', 'desc')->get();
+                        $notif[0][1] = Mobil::where('state','=','1')->where('id_qc_in',null)->orderBy('updated_at', 'desc')->get();
                         $notif[1][0] = "keluar";
-                        $notif[1][1] = Mobil::where('state','=','7')->orderBy('updated_at', 'desc')->get();
+                        $notif[1][1] = Mobil::where('state','=','7')->where('id_qc_out',null)->orderBy('updated_at', 'desc')->get();
                     } else {
                         $notif[0][0] = "keluar";
-                        $notif[0][1] = Mobil::where('state','=','7')->orderBy('updated_at', 'desc')->get();
+                        $notif[0][1] = Mobil::where('state','=','7')->where('id_qc_out',null)->orderBy('updated_at', 'desc')->get();
                         $notif[1][0] = "masuk";
-                        $notif[1][1] = Mobil::where('state','=','1')->orderBy('updated_at', 'desc')->get();
+                        $notif[1][1] = Mobil::where('state','=','1')->where('id_qc_in',null)->orderBy('updated_at', 'desc')->get();
                     }
                 } else {
                     if (count($n) > 0) {
                         $notif[0][0] = "masuk";
-                        $notif[0][1] = Mobil::where('state','=','1')->get();
+                        $notif[0][1] = Mobil::where('state','=','1')->where('id_qc_in',null)->get();
                     }
 
                     if (count($o) > 0) {
                         $notif[0][0] = "keluar";
-                        $notif[0][1] = Mobil::where('state','=','7')->get();
+                        $notif[0][1] = Mobil::where('state','=','7')->where('id_qc_out',null)->get();
                     }
                 }
 
@@ -534,7 +583,12 @@ class pageController extends Controller
                 $not->notif = "";
             }
 
-            $not->pemeriksaan = Qc::where('id_pdi','=',Auth::user()->id)->where('selesai','=',0)->count();
+            $not->pemeriksaan = Qc::where('id_pdi','=',Auth::user()->id)->where('selesai','=',0)
+            ->where(function ($fn) {
+                $fn->where('node',0)
+                ->orwhere('node',1);
+            })->count();
+            // ->where('node','<>',5)->where('node','<>',8);
 
             return $not;
         }

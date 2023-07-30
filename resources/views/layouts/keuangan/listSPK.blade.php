@@ -19,7 +19,7 @@
 @section('content')
 
     <div class="card">
-        <div class="card-body">
+        <div class="card-body" style="overflow-x: auto; white-space:nowrap">
             <h4 class="card-title"></h4>
             <table id="TdataT" class="table table-stripped justify-content-center">
                 <thead>
@@ -54,7 +54,17 @@
                                     @if ($v->id_kwitansi_uang_spk==null)
                                         <button class="btn btn-secondary" onclick="uangSPK({{$v->id}})">Terima Pembayaran SPK</button>
                                     @else
-                                        <button class="btn btn-secondary" onclick="accBayar({{$v->id}})">Terima Pembayaran Mobil</button>
+                                        @switch($v->id_jenis_pembayaran)
+                                            @case(1)
+                                                <button class="btn btn-info" onclick="accBayar({{$v->id}})">Terima Pembayaran Mobil</button>
+                                                @break
+                                            @case(2)
+                                                <button class="btn btn-info" onclick="accBayar2({{$v->id}})">Terima Pembayaran Leasing</button>
+                                                <button class="btn btn-warning" onclick="kreditDitolak({{$v->id}})">Pengajuan Kredit ditolak</button>
+                                                @break
+                                            @default
+                                                
+                                        @endswitch
                                     @endif
                                 @endif
                             </td>
@@ -101,7 +111,7 @@
         <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-            <h1 class="modal-title fs-5" id="uangSPKLabel">Terima Pembayaran Mobil</h1>
+            <h1 class="modal-title fs-5" id="uangMobilLabel">Terima Pembayaran Mobil</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -134,6 +144,44 @@
             <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
             <button type="button" class="btn btn-primary" onclick="submitUangMobil()">Submit</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+
+    <!-- Modal terima pembayaran Mobil Kredit-->
+    <div class="modal fade" id="uangMobil2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="uangMobil2Label" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="uangMobil2Label">Terima Pembayaran Leasing</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formMobil2">
+                    <input type="text" class="d-none" name="id" id="id_jual3"/>
+                    <div class="mb-3">
+                        <label for="terimaDari3">Terima Dari</label>
+                        <input type="text" class="form-control border" name="nama" id="terimaDari3">
+                    </div>
+                    <div class="mb-3">
+                        <label for="nilai2">Sebesar</label>
+                        <input type="text" class="form-control border senilai" name="harga" id="nilai3">
+                    </div>
+                    <div class="mb-3">
+                        <label for="iKontrak">Nomor Kontrak</label>
+                        <input type="text" class="form-control border" name="nomor_kontrak_leasing" id="iKontrak">
+                    </div>
+                    <div class="mb-3">
+                        <label for="iJTKon">Tanggal Jatuh Tempo</label>
+                        <input type="date" class="form-control border" name="jt_pembayaran_kredit" id="iJTKredit">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-primary" onclick="submitUangMobil2()">Submit</button>
             </div>
         </div>
         </div>
@@ -182,6 +230,11 @@
             $('#uangMobil').modal('show');
         }
 
+        function accBayar2(x) {
+            $('#id_jual3').val(x);
+            $('#uangMobil2').modal('show');
+        }
+
         $('#uangSPK').on('hidden.bs.modal', function () {
             $('#formSPK')[0].reset();
         });
@@ -190,6 +243,10 @@
             $('#formMobil')[0].reset();
             $('#divSisa').removeClass('d-none');
             $('#divSisa').addClass('d-none');
+        });
+
+        $('#uangMobil2').on('hidden.bs.modal', function () {
+            $('#formMobil2')[0].reset();
         });
 
 
@@ -336,6 +393,69 @@
                 });
 
         }
+
+
+        function submitUangMobil2() {
+            var data = {};
+            var today = new Date();
+            var day = today.getDate();
+            var month = today.getMonth() + 1;
+            var year = today.getFullYear();
+
+            
+
+            if ($('#terimaDari3').val() !== "" && $('#nilai3').val() !== "" && $('#iKontrak').val() !== "" && $('#iJTKredit').val() !== "") {
+
+                // Menggunakan metode serializeArray() untuk mendapatkan semua input dalam formulir
+                var formInputs = $('#formMobil2').serializeArray();
+
+                // Melakukan iterasi melalui setiap input dalam formulir
+                $.each(formInputs, function(index, input) {
+                    data[input.name] = input.value; // Menambahkan nilai input ke objek formData
+                });
+
+                data.tanggal = moment(today).locale('id').format('DD MMMM YYYY');
+
+                console.log(data);
+
+            } else {
+                alert("Lengkapi form!");
+                return false;
+            }
+
+            data.untuk = "Pembayaran Mobil dari Leasing";
+
+                $.ajax({
+                    type: "POST",
+                    url: "/spk/uangMobil2",
+                    data: data,
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.status == "success") {
+
+                            today = moment(today).locale('id').format('dddd, DD MMMM YYYY');
+
+                            console.log(response.data);
+
+                            console.log('harga jadi : '+response.data.harga_jadi);
+
+                            response.data.nama = $('#terimaDari2').val();
+                            response.data.untuk = "Pembayaran Mobil";
+                            response.data.terbilang = terbilang(data.harga);
+                            response.data.jumlah_uang = data.harga;
+                            response.data.today = today;
+
+                            kwitansi(response.data);
+
+                            location.reload();
+                        } else {
+                            console.log(response.data);
+                        }
+                    }
+                });
+
+        }
+
 
     </script>
 

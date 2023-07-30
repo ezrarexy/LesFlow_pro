@@ -266,4 +266,66 @@ class FinanceController extends Controller
         return response(['status'=>'success','data'=>$data]);
     }
 
+    public function KwitansiMobil2(Request $req)  {
+        $id = $req->id;
+
+        $jual = transaksiJual::find($id);
+
+        $data = Mobil::select('mobils.*','mobils.nama as type','merks.nama as merk')->join('merks','mobils.id_merk','=','merks.id')->where('mobils.id',$jual->id_mobil)->first();
+
+        $data->harga_jadi = "";
+
+        try {
+            DB::beginTransaction();
+
+                
+                $id_kwitnsi = DB::table('kwitansis')->insertGetId([
+                    'untuk' => $req->untuk,
+                    'nama' => $req->nama,
+                    'harga' => $req->harga,
+                    'merk' => $data->merk." ".$data->type,
+                    'tahun' => $data->tahun,
+                    'warna' => $data->warna,
+                    'bahan_bakar' => $data->bahan_bakar,
+                    'an_bpkb' => $data->an_bpkb,
+                    'alamat' => $data->alamat,
+                    'nomor_polisi' => $data->nomor_polisi,
+                    'nomor_rangka' => $data->nomor_rangka,
+                    'nomor_mesin' => $data->nomor_mesin,
+                    'nomor_bpkb' => $data->nomor_bpkb,
+                    'tanggal' => $req->tanggal,
+                    'created_at' =>  Carbon::now(),
+                    'updated_at' => Carbon::now(), 
+                ]);
+                
+
+                
+                $mobil = Mobil::find($jual->id_mobil);
+                $mobil->state = 7;
+                $mobil->status = null;
+                $mobil->save();
+
+                $spk = Spk::find($jual->id_spk);
+                $spk->id_kwitansi_uang_mobil = $id_kwitnsi;
+                $spk->jt_pembayaran_kredit = $req->jt_pembayaran_kredit;
+                $spk->nomor_kontrak_leasing = $req->nomor_kontrak_leasing;
+
+                $data->harga_jadi = $spk->harga_jadi;
+
+                $spk->save();
+
+                $jual->node = 7;
+
+                $jual->save();
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response(['status'=>'fail','data'=>$e]);
+        }
+        
+        
+        return response(['status'=>'success','data'=>$data]);
+    }
+
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\bast;
+use App\Models\Bengkel;
 use App\Models\DetailQc;
 use App\Models\kwitansi;
 use App\Models\Mobil;
@@ -73,7 +74,6 @@ class Controller extends BaseController
         return response(['status'=>'success','res'=>$kwitansi]);
     }
 
-
     public function HasilQC(Request $req) {
         $qc = app()->make('stdClass');
         $x = Qc::find($req->id_qc);
@@ -127,6 +127,13 @@ class Controller extends BaseController
         }
 
         return response(['status'=>'success']);
+    }
+
+    public function getBengkel(Request $req) {
+
+        $data = Bengkel::where('id_jenis_bengkel',$req->id_jenis)->get();
+        
+        return response(['status'=>'success','res'=>$data]);
     }
 
 }

@@ -35,34 +35,38 @@
     @endforeach
   
 
-<!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdropLabel">Ambil Tugas Pemeriksaan</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p>Ambil tugas untuk memeriksa <b><span id="mobil"></span></b> ?</p>
-          <p>Setelah mengambil tugas, <b><span id="mobilx"></span></b> akan ada di menu <i><a href="{{route('pemeriksaan')}}" target="_blank">Pemeriksaan</a></i> hingga mobil selesai di periksa.</p>
-        </div>
-        <div class="modal-footer">
-            <form action="{{ route('OPSambil' )}}" method="POST">
-                @csrf
-                <input type="text" id="iId" name="id" hidden>
-                <input type="text" id="iState" name="state" hidden>
 
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                <button class="btn btn-primary">Lanjutkan</button>
-            </form>
-        </div>
-      </div>
-    </div>
-  </div>
 
 
 @endsection
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Ambil Tugas Pemeriksaan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                <p>Ambil tugas untuk memeriksa <b><span id="mobil"></span></b> ?</p>
+                <p>Setelah mengambil tugas, <b><span id="mobilx"></span></b> akan ada di menu <i><a href="{{route('pemeriksaan')}}" target="_blank">Pemeriksaan</a></i> hingga mobil selesai di periksa.</p>
+                </div>
+                <div class="modal-footer">
+                    <form action="{{ route('OPSambil' )}}" method="POST">
+                        @csrf
+                        <input type="text" id="iId" name="id" hidden>
+                        <input type="text" id="iState" name="state" hidden>
+
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button class="btn btn-primary">Lanjutkan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 @section('script')
 

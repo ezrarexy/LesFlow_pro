@@ -119,7 +119,7 @@
                 <form id="formFinishDO" class="text-center" enctype="multipart/form-data">
                     <input type="text" name="id" id="id_jual2" hidden />
                     <div>
-                        <img src="{{asset('assets/img/upload.svg')}}" id="imgEle" class="w-80" alt="" srcset="">
+                        <img src="{{asset('assets/img/upload.svg')}}" data-stock="{{asset('assets/img/upload.svg')}}" id="imgEle" class="w-80" alt="" srcset="">
                     </div>
                     <span id="buktiAntarLabel">Foto Bukti Antar</span>
                     <input type="file" name="foto" id="foto" accept="image/*" hidden/>

@@ -56,7 +56,7 @@
                             <td class="text-center">Rp<span class="harga">{{$v->harga_jual}}</span></td>
                         @endif
                         <td class="text-center">
-                            <button class="btn btn-info" onclick="getDoc({{$v->id}})">Dokumen</button>
+                            <button class="btn btn-info" onclick="getDoc({{$v->id}},'{{$v->jt_pkb}}','{{$v->jt_stnk}}')">Dokumen</button>
                             <button class="btn btn-success" onclick="hasilQC({{$v->id_qc_in}})">QC</button>
                         </td>
                     </tr>
@@ -698,6 +698,20 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="mb-3">
+                        <h5>Tanggal Jatuh Tempo PKB & STNK</h5>
+                        <table class="table">
+                            <tr>
+                                <td>PKB</td>
+                                <td><span id="lPKB"></span></td>
+                            </tr>
+                            <tr>
+                                <td>STNK</td>
+                                <td><span id="lSTNK"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <button class="btn btn-warning" data-bs-target="#modalId" data-bs-toggle="modal">Ubah</button>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -705,6 +719,30 @@
             </div>
         </div>
     </div>
+
+
+    
+    <!-- Modal STNK & PKB -->
+    <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitleId">Jatuh Tempo STNK & PKB</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3"><label for="">PKB Berlaku hingga</label><input type="date" class="form-control" name="jt_pkb" id="jt_pkb"></div>
+                    <div class="mb-3"><label for="">STNK Berlaku hingga</label><input type="date" class="form-control" name="jt_stnk" id="jt_stnk"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-target="#documents" data-bs-toggle="modal">Tutup</button>
+                    <button type="button" id="updateJT" class="btn btn-primary" disabled>Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+
 
 @endsection
 
@@ -816,8 +854,15 @@
             });
         }
 
-        function getDoc(x) {
+        function getDoc(x,y,z) {
             const id = x;
+            gid = id;
+
+            $('#jt_pkb').val(y);
+            $('#jt_stnk').val(z);
+
+            $('#lPKB').text( y=="" ? "Data belum diinput" : y );
+            $('#lSTNK').text( z=="" ? "Data belum diinput" : z );
 
             $.ajax({
                 type: "GET",
@@ -874,8 +919,56 @@
                     }
                 }
             });
+        });
+
+
+        $('#jt_pkb, #jt_stnk').on('change', function () {
+            checkJT();
+        });
+
+        function checkJT() {
+            $x = $('#jt_pkb').val();
+            $y = $('#jt_stnk').val();
+
+            if ($x == "" || $y == "") $('#updateJT').prop('disabled',true);
+            else $('#updateJT').prop('disabled',false);
+
+        }
+
+        $('#updateJT').on('click', () => {
+
+            $.LoadingOverlay("show");
+            var data = {};
+            data.id = gid;
+            data.x = $('#jt_pkb').val();
+            data.y = $('#jt_stnk').val();
+
+
+            $.ajax({
+                type: "POST",
+                url: "/dokumen/jt",
+                data: data,
+                dataType: "json",
+                success: function (response) {
+                    if (response.status=="success") {
+                        $.LoadingOverlay("hide");
+                        location.reload();
+                    } else {
+                        $.LoadingOverlay("hide");
+                        console.log(response.res);
+                    }
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            });
 
         });
+
+        $('#modalId').on('hidden.bs.modal', function () {
+            $('#jt_pkb').val("");
+            $('#jt_stnp').val("");
+        })
 
     </script>
     

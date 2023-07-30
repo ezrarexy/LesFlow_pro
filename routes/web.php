@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\pageController;
 use App\Http\Controllers\Auth\LoginController;
@@ -57,11 +58,11 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::GET('/dokumen/get', [Controller::class, 'GetDokumen']);
 
-    Route::POST('/dokumen/put', [Controller::class, 'PutDokumen']);
+    Route::GET('/bengkel/get', [Controller::class, 'GetBengkel']);
 
 });
 
-Route::group(['middleware' => ['auth','jbmid']], function () {
+Route::group(['middleware' => ['jbmid']], function () {
     
     Route::get('/spk', [pageController::class, 'SPK'])->name('spk');
 
@@ -84,7 +85,7 @@ Route::group(['middleware' => ['auth','jbmid']], function () {
     Route::GET('/mobil', [pageController::class, 'ListMobil']);
 });
 
-Route::group(['middleware' => ['auth','manager']], function () {
+Route::group(['middleware' => ['manager']], function () {
     Route::get('/konfirmasi/jual', [pageController::class, 'KonfJual'])->name('konfJual');
 
     Route::get('/konfirmasi/beli', [pageController::class, 'KonfBeli'])->name('konfBeli');
@@ -115,9 +116,15 @@ Route::group(['middleware' => ['auth','manager']], function () {
 
 });
 
-Route::group(['middleware' => ['auth', 'admin']], function () {});
+Route::group(['middleware' => [ 'admin']], function () {
 
-Route::group(['middleware' => ['auth','finance']], function () {
+    Route::POST('/dokumen/put', [Controller::class, 'PutDokumen']);
+
+    Route::POST('/dokumen/jt', [AdminController::class, 'JatuhTempo']);
+
+});
+
+Route::group(['middleware' => ['finance']], function () {
 
     Route::get('/listspk', [pageController::class, 'listSPK'])->name('listspk');
 
@@ -135,9 +142,11 @@ Route::group(['middleware' => ['auth','finance']], function () {
 
     Route::POST('/spk/uangMobil', [FinanceController::class, 'KwitansiMobil'])->name('uangMobil');
 
+    Route::POST('/spk/uangMobil2', [FinanceController::class, 'KwitansiMobil2'])->name('uangMobil2');
+
 });
 
-Route::group(['middleware' => ['auth','sales']], function () {
+Route::group(['middleware' => ['sales']], function () {
     Route::get('/prospek', [pageController::class, 'Prospek'])->name('prospek');
 
 });
@@ -158,6 +167,8 @@ Route::group(['middleware' => 'ops'], function () {
 
     Route::POST('/periksa', [pageController::class, 'Periksa'])->name('periksa');
 
+    Route::POST('/periksa2', [pageController::class, 'Periksa2'])->name('periksa2');
+
     ROUTE::PATCH('/qcClick', [OPSController::class, 'QCClick'])->name('QCClick');
 
     ROUTE::PATCH('/banQC', [OPSController::class, 'BanQC'])->name('banQC');
@@ -168,7 +179,13 @@ Route::group(['middleware' => 'ops'], function () {
 
     Route::POST('/delivered', [OPSController::class, 'Delivered']);
 
+    Route::GET('/repair', [pageController::class, 'Repair'])->name('repair');
 
+    Route::POST('/repair/add', [OPSController::class, 'RepairAdd']);
+
+    Route::POST('/bengkel/selesai', [OPSController::class, 'SelesaiBengkel']);
+
+    Route::POST('/repair/done', [OPSController::class, 'RepairDone']);
 });
 
 Route::get('/cekcek', function(){

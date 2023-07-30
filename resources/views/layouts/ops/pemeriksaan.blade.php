@@ -14,9 +14,14 @@
 
         @foreach ($mobil as $k => $v)
 
+
+            @php
+                $status = $v->state==9 ? '<span data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="QC Keluar"><i class="material-icons opacity-10">arrow_upward</i></span>' : '<span data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="QC Masuk"><i class="material-icons opacity-10">arrow_downward</i></span>'
+            @endphp
+
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">{{ $v->merk." ".$v->nama }} <span class="badge bg-danger">{{$v->tahun}}</span></h4>
+                    <h4 class="card-title">{{ $v->merk." ".$v->nama }} <span class="badge bg-danger">{{$v->tahun}}</span> {!! $status !!} </h4>
                     <p class="card-text">{{$v->nomor_polisi}}</p>
                 </div>
                 <div class="card-body row">
@@ -33,7 +38,7 @@
                         @if ($v->node == 0)
                             <button class="btn text-white" style="background-color: #198754" onclick="mulai({{ json_encode($v) }})">Mulai</button>
                         @else
-                            <form action="{{ route('periksa') }}" method="POST">
+                            <form action="{{ $v->status=="reQC" ? route('periksa2') : route('periksa') }}" method="POST">
                                 @csrf
                                 <input name="id" type="text" value="{{$v->id}}" hidden>
                                 <button class="btn text-white" style="background-color: #0d6efd">Lanjutkan</button>
@@ -47,6 +52,12 @@
     
 
 
+
+
+
+
+
+@endsection
 
 
     <!-- Modal -->
@@ -93,8 +104,6 @@
     </div>
 
 
-@endsection
-
 @section('script')
 
 <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
@@ -129,7 +138,6 @@
             $('#iPajak').prop('readonly', true);
         }
 
-
         $('#inputSisa').modal('toggle');
         console.log(x);
     }
@@ -137,6 +145,11 @@
     $('#inputSisa').on('hidden.bs.modal', function () {
         $('#iId').val("");
         $('#iIdMobil').val("");
+        $('#iIsiSilinder').val("");
+        $('#iWarnaInterior').val("");
+        $('#iOdometer').val("");
+        $('#iPajak').val("");
+        $("#formLengkap :input").prop("readonly", false);
     })
 
     $('#submitForm').on('click', function () {
@@ -180,6 +193,7 @@
       }
       return params;
     }
+
 
 </script>
 
