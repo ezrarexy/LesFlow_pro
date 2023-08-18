@@ -560,3 +560,1003 @@ function BAST(data) {
     // doc.save("test.pdf");
 
 }
+
+function QualityControl (data) {
+    var stnk = data.stnk;
+    var bpkb = data.bpkb;
+    var faktur = data.faktur;
+    var cek_fisik = data.cek_fisik;
+    var sph = data.sph;
+    var buku_service = data.buku_service;
+    var kwitansi_kosong = data.kwitansi_kosong;
+    var fotokopi_ktp = data.fotokopi_ktp;
+    var buku_manual = data.buku_manual;
+    var catatan_dokumen = data.catatan_dokumen;
+    
+    var kunci_serep = data.kunci_serep;
+    var derek = data.derek;
+    var dongkrak = data.dongkrak;
+    var ban_serep = data.ban_serep;
+    var kunci_roda = data.kunci_roda;
+    var putaran_dongkrak = data.putaran_dongkrak;
+    var catatan_kelengkapan = data.catatan_kelengkapan;
+    
+    var kaca_depan = data.kaca_depan;
+    var daun_wiper_depan = data.daun_wiper_depan;
+    var pelipit_pintu = data.pelipit_pintu;
+    var grill_depan = data.grill_depan;
+    var daun_wiper_belakang = data.daun_wiper_belakang;
+    var catatan_kaca_lampu = data.catatan_kaca_lampu;
+    
+    var liner_fender_depan_kanan = data.liner_fender_depan_kanan;
+    var liner_fender_depan_kiri = data.liner_fender_depan_kiri;
+    var liner_fender_belakang_kanan = data.liner_fender_belakang_kanan;
+    var liner_fender_belakang_kiri = data.liner_fender_belakang_kiri;
+    var talang_lumpur_depan_kanan = data.talang_lumpur_depan_kanan;
+    var talang_lumpur_depan_kiri = data.talang_lumpur_depan_kiri;
+    var talang_lumpur_belakang_kanan = data.talang_lumpur_belakang_kanan;
+    var talang_lumpur_belakang_kiri = data.talang_lumpur_belakang_kiri;
+    var bagian_bawah_mesin = data.bagian_bawah_mesin;
+    var bagian_sasis_depan = data.bagian_sasis_depan;
+    var bagian_sasis_tengah = data.bagian_sasis_tengah;
+    var bagian_sasis_belakang = data.bagian_sasis_belakang;
+    var catatan_under_body = data.catatan_under_body;
+    
+    var oli_mesin = data.oli_mesin;
+    var oli_transmisi_at = data.oli_transmisi_at;
+    var minyak_rem = data.minyak_rem;
+    var minyak_power_steering = data.minyak_power_steering;
+    var air_radiator = data.air_radiator;
+    var air_wiper = data.air_wiper;
+    var suara_mesin_normal = data.suara_mesin_normal;
+    var mesin_bebas_rembes = data.mesin_bebas_rembes;
+    var belt = data.belt;
+    var selang_selang = data.selang_selang;
+    var accu = data.accu;
+    var asap_dan_tutup_oli = data.asap_dan_tutup_oli;
+    var radiator = data.radiator;
+    var kompresor_ac = data.kompresor_ac;
+    var catatan_mesin = data.catatan_mesin;
+    
+    var sensor_engine_check = data.sensor_engine_check;
+    var sensor_airbag = data.sensor_airbag;
+    var sensor_abs = data.sensor_abs;
+    var sensor_seat_belt = data.sensor_seat_belt;
+    var sensor_rem_tangan = data.sensor_rem_tangan;
+    var sensor_suhu_mesin = data.sensor_suhu_mesin;
+    var sensor_tekanan_oli = data.sensor_tekanan_oli;
+    var sensor_electric_power_steering = data.sensor_electric_power_steering;
+    var sensor_accu = data.sensor_accu;
+    var sensor_door_lock = data.sensor_door_lock;
+    var sensor_vsa = data.sensor_vsa;
+    var catatan_sensor = data.catatan_sensor;
+    
+    var fungsi_ac_belakang = data.fungsi_ac_belakang;
+    var jok_baris_belakang = data.jok_baris_belakang;
+    var fungsi_kursi_baris_kedua = data.fungsi_kursi_baris_kedua;
+    var fungsi_kursi_baris_ketiga = data.fungsi_kursi_baris_ketiga;
+    var lampu_plafon_belakang = data.lampu_plafon_belakang;
+    var karpet_keping_baris_ke = data.karpet_keping_baris_ke;
+    var catatan_interior_belakang = data.catatan_interior_belakang;
+    
+    var kondisi_stir = data.kondisi_stir;
+    var klakson = data.klakson;
+    var tombol_stir = data.tombol_stir;
+    var lampu_sen_spion = data.lampu_sen_spion;
+    var lampu_depan = data.lampu_depan;
+    var lampu_hazzar = data.lampu_hazzar;
+    var lampu_atret = data.lampu_atret;
+    var handle_pintu = data.handle_pintu;
+    var konsol_box = data.konsol_box;
+    var spion_kanan = data.spion_kanan;
+    var spion_kiri = data.spion_kiri;
+    var sun_visor = data.sun_visor;
+    var rem_tangan = data.rem_tangan;
+    var power_window_supir = data.power_window_supir;
+    var power_window_penumpang = data.power_window_penumpang;
+    var power_window_belakang_kanan = data.power_window_belakang_kanan;
+    var power_window_belakang_kiri = data.power_window_belakang_kiri;
+    var pembuka_kap_mesin = data.pembuka_kap_mesin;
+    var pembuka_tangki_bensin = data.pembuka_tangki_bensin;
+    var sabuk_pengaman_supir = data.sabuk_pengaman_supir;
+    var sabuk_pengaman_penumpang = data.sabuk_pengaman_penumpang;
+    var karpet_keping_supir = data.karpet_keping_supir;
+    var karpet_keping_penumpang = data.karpet_keping_penumpang;
+    var spion_tengah = data.spion_tengah;
+    var audio_speaker = data.audio_speaker;
+    var lampu_plafon_depan = data.lampu_plafon_depan;
+    var catatan_interior_depan = data.catatan_interior_depan;
+
+    const doc = new jsPDF('p', 'mm', [210, 297]); // (orientation, unit, size paper) (A4)
+    
+    // page 1
+    // logo
+    doc.addImage(base64LogoLm, 'JPEG', 5, 10, 25, 25); // (data, type file, x, y, w, h)
+
+    // title
+    doc.setTextColor(255, 0, 0); // color red
+    doc.setFontSize(24); // font size
+    doc.setFont(undefined, 'bold'); // set font (text type, format text)
+    doc.text("LESTARI MOBILINDO", 32, 17); // (text, x, y)
+
+    // set text under title
+    doc.setTextColor(0, 0, 0); // color black
+    doc.setFontSize(9); // font size
+    doc.text("JUAL BELI - TUKAR TAMBAH MOBIL BARU DAN BEKAS", 32, 21);
+
+    doc.setFont(undefined, 'normal');
+    doc.text("Jl. Jend. Sudirman No. 550 A - B KM. 3,5 Palembang", 32, 25);
+    doc.text("(Samping Taman Makan Pahlawan)", 32, 29);
+    doc.text("Phone/Fax. 0711 322235", 32, 33);
+
+    // line vertical
+    doc.setDrawColor(0, 0, 0);
+    doc.setLineWidth(0.1); // the higher number, the bolder line
+    doc.line(127, 10, 127, 35); // line (xstart, ystart, xend, yend)
+
+    // header right
+    doc.setFont(undefined, 'bold');
+    doc.setFontSize(20);
+    doc.text("QUALITY CONTROL", 132, 25);
+
+    // line horizontal
+    doc.setDrawColor(0, 0, 0);
+    doc.setLineWidth(1);
+    doc.line(5, 39, 205, 39);
+
+    // form
+    doc.setFont(undefined, 'normal');
+    doc.setFontSize(11);
+    doc.text("Tanggal Masuk", 7, 48);
+    doc.text(": ", 36, 48);
+    doc.text("No Polisi", 7, 56);
+    doc.text(": ", 36, 56);
+    doc.text("Merk", 7, 64);
+    doc.text(": ", 36, 64);
+    doc.text("Type", 7, 72);
+    doc.text(": ", 36, 72);
+    doc.text("Transmisi", 7, 80);
+    doc.text(": ", 36, 80);
+    doc.text("Tahun", 7, 88);
+    doc.text(": ", 36, 88);
+    doc.text("Isi Silinder", 7, 96);
+    doc.text(": ", 36, 96);
+    doc.text("No Rangka", 7, 104);
+    doc.text(": ", 36, 104);
+    doc.text("No Mesin", 7, 112);
+    doc.text(": ", 36, 112);
+
+    doc.text("Warna Eksterior/Interior", 105, 56);
+    doc.text(": ", 147, 56);
+    doc.text("Bahan Bakar", 105, 64);
+    doc.text(": ", 147, 64);
+    doc.text("Adometer", 105, 72);
+    doc.text(": ", 147, 72);
+    doc.text("Pajak", 105, 80);
+    doc.text(": ", 147, 80);
+    doc.text("Kepimilikan", 105, 88);
+    doc.text(": ", 147, 88);
+
+    // sign
+    doc.text("TTD PDI", 30, 150);
+    doc.text("(\t\t\t\t)", 20, 180);
+    doc.text("TTD MARKETING", 85, 150);
+    doc.text("(\t\t\t\t)", 84, 180);
+    doc.text("TTD ADMIN", 152, 150);
+    doc.text("(\t\t\t\t)", 145, 180);
+
+    doc.text("DISETUJUI OLEH,", 85, 200);
+    doc.text("HEAD FINANCE", 86.5, 205);
+    doc.text("(Yunita)", 95, 235);
+
+    // add new page
+    doc.addPage();
+
+    // page 2
+    // table (dokumen)
+    doc.autoTable({
+        body: [
+        [{ // header
+            content: 'Dokumen',
+            colSpan: 4,
+            styles: {
+            fillColor: [255, 0, 0],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold',
+            halign: 'center',
+            }
+        }],
+        [ // row 2, etc (array is a row)
+            { // STNK
+            content: 'STNK',
+            value: stnk, // <- we add a new property to save the value of variabel
+            },
+            '', // <- this is the second column, for the checklist image, let it empty
+            { // BPKB
+            content: 'BPKB',
+            value: bpkb,
+            styles: {
+                minCellWidth: 40, // to adjust column width, depends on table
+            },
+            },
+            '', // <- this is the fourth column, for the checklist image, let it empty
+        ],
+        [
+            { // FAKTUR
+            content: 'FAKTUR',
+            value: faktur,
+            },
+            '',
+            { // CEK FISIK
+            content: 'CEK FISIK',
+            value: cek_fisik,
+            },
+            '',
+        ],
+        [ 
+            { // SURAT PELEPASAN HAK
+            content: 'SURAT PELEPASAN HAK',
+            value: sph,
+            },
+            '',
+            { // BUKU SERVICE
+            content: 'BUKU SERVICE',
+            value: buku_service,
+            },
+        ],
+        [
+            { // KWITANSI KOSONG
+            content: 'KWITANSI KOSONG',
+            value: kwitansi_kosong,
+            },
+            '',
+            { // FOTOKOPI KTP
+            content: 'FOTOKOPI KTP',
+            value: fotokopi_ktp,
+            },
+            '',
+        ],
+        [
+            { // BUKU MANUAL
+            content: 'BUKU MANUAL',
+            value: buku_manual,
+            },
+            '',
+            { // because number of lists is odd, so we have to build the empty column to avoid error from didDrawCell
+            content: '',
+            value: '',
+            },
+            '',
+        ],
+        ],
+        didDrawCell: (data) => {
+        if (data.section === 'body' && data.column.index === 1) { // for second column
+            if (data.row.raw[0].value === 1) doc.addImage(base64Checked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+            else if (data.row.raw[0].value === 0) doc.addImage(base64Unchecked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+        }
+        else if (data.section === 'body' && data.column.index === 3) { // for fourth column
+            if (data.row.raw[2].value === 1) doc.addImage(base64Checked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+            else if (data.row.raw[2].value === 0) doc.addImage(base64Unchecked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+        }
+        },
+    });
+
+    doc.text("CATATAN: " + catatan_dokumen, 15, 65);
+
+    // table (kelengkapan)
+    doc.autoTable({
+        startY: doc.lastAutoTable.finalY + 15, // margin top table
+        body: [
+        [{ // header
+            content: 'Kelengkapan',
+            colSpan: 4,
+            styles: {
+            fillColor: [255, 0, 0],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold',
+            halign: 'center',
+            }
+        }],
+        [
+            { // KUNCI SEREP
+            content: 'KUNCI SEREP',
+            value: kunci_serep,
+            styles: {
+                minCellWidth: 45,
+            },
+            },
+            '',
+            { // DONGKRAK
+            content: 'DONGKRAK',
+            value: dongkrak,
+            },
+            '',
+        ],
+        [
+            { // KUNCI RODA
+            content: 'KUNCI RODA',
+            value: kunci_roda,
+            },
+            '',
+            { // DEREK
+            content: 'DEREK',
+            value: derek,
+            },
+            '',
+        ],
+        [
+            { // BAN SEREP
+            content: 'BAN SEREP',
+            value: ban_serep,
+            },
+            '',
+            { // PUTARAN DONGKRAK
+            content: 'PUTARAN DONGKRAK',
+            value: putaran_dongkrak,
+            },
+            '',
+        ],
+        ],
+        didDrawCell: (data) => {
+        if (data.section === 'body' && data.column.index === 1) {
+            if (data.row.raw[0].value === 1) doc.addImage(base64Checked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+            else if (data.row.raw[0].value === 0) doc.addImage(base64Unchecked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+        }
+        else if (data.section === 'body' && data.column.index === 3) {
+            if (data.row.raw[2].value === 1) doc.addImage(base64Checked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+            else if (data.row.raw[2].value === 0) doc.addImage(base64Unchecked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+        }
+        },
+    });
+
+    doc.text("CATATAN: " + catatan_kelengkapan, 15, 110);
+
+    // table (kaca & lampu)
+    doc.autoTable({
+        startY: doc.lastAutoTable.finalY + 15,
+        body: [
+        [{ // header
+            content: 'Kaca & Lampu',
+            colSpan: 4,
+            styles: {
+            fillColor: [255, 0, 0],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold',
+            halign: 'center',
+            }
+        }],
+        [
+            { // KACA DEPAN
+            content: 'KACA DEPAN',
+            value: kaca_depan,
+            },
+            '',
+            { // PELIPIT PINTU
+            content: 'PELIPIT PINTU',
+            value: pelipit_pintu,
+            styles: {
+                minCellWidth: 40,
+            },
+            },
+            '',
+        ],
+        [
+            { // DAUN WIPER DEPAN
+            content: 'DAUN WIPER DEPAN',
+            value: daun_wiper_depan,
+            },
+            '',
+            { // GRILL DEPAN
+            content: 'GRILL DEPAN',
+            value: grill_depan,
+            },
+            '',
+        ],
+        [ 
+            { // DAUN WIPER BELAKANG
+            content: 'DAUN WIPER BELAKANG',
+            value: daun_wiper_belakang,
+            },
+            '',
+            {
+            content: '',
+            value: '',
+            },
+            '',
+        ],
+        ],
+        didDrawCell: (data) => {
+        if (data.section === 'body' && data.column.index === 1) {
+            if (data.row.raw[0].value === 1) doc.addImage(base64Checked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+            else if (data.row.raw[0].value === 0) doc.addImage(base64Unchecked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+        }
+        else if (data.section === 'body' && data.column.index === 3) {
+            if (data.row.raw[2].value === 1) doc.addImage(base64Checked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+            else if (data.row.raw[2].value === 0) doc.addImage(base64Unchecked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+        }
+        },
+    });
+
+    doc.text("CATATAN: " + catatan_kaca_lampu, 15, 156);
+
+    // table (bagian bawah mobil)
+    doc.autoTable({
+        startY: doc.lastAutoTable.finalY + 15,
+        body: [
+        [{ // header
+            content: 'Bagian Bawah Mobil',
+            colSpan: 4,
+            styles: {
+            fillColor: [255, 0, 0],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold',
+            halign: 'center',
+            }
+        }],
+        [
+            { // LINER FENDER DEPAN KANAN
+            content: 'LINER FENDER DEPAN KANAN',
+            value: liner_fender_depan_kanan,
+            },
+            '',
+            { // LINER FENDER DEPAN KIRI
+            content: 'LINER FENDER DEPAN KIRI',
+            value: liner_fender_depan_kiri,
+            },
+            '',
+        ],
+        [ 
+            { // LINER FENDER BELAKANG KANAN
+            content: 'LINER FENDER BELAKANG KANAN',
+            value: liner_fender_belakang_kanan,
+            },
+            '',
+            { // LINER FENDER BELAKANG KIRI
+            content: 'LINER FENDER BELAKANG KIRI',
+            value: liner_fender_belakang_kiri,
+            },
+            '',
+        ],
+        [ 
+            { // TALANG LUMPUR DEPAN KANAN
+            content: 'TALANG LUMPUR DEPAN KANAN',
+            value: talang_lumpur_depan_kanan,
+            },
+            '',
+            { // TALANG LUMPER DEPAN KIRI
+            content: 'TALANG LUMPER DEPAN KIRI',
+            value: talang_lumpur_depan_kiri,
+            },
+            '',
+        ],
+        [
+            { // TALANG LUMPUR BELAKANG KANAN
+            content: 'TALANG LUMPUR BELAKANG KANAN',
+            value: talang_lumpur_belakang_kanan,
+            },
+            '',
+            { // TALANG LUMPUR BELAKANG KIRI
+            content: 'TALANG LUMPUR BELAKANG KIRI',
+            value: talang_lumpur_belakang_kiri,
+            },
+            '',
+        ],
+        [
+            { // BAGIAN BAWAH MESIN
+            content: 'BAGIAN BAWAH MESIN',
+            value: bagian_bawah_mesin,
+            },
+            '',
+            { // BAGIAN SASIS DEPAN
+            content: 'BAGIAN SASIS DEPAN',
+            value: bagian_sasis_depan,
+            },
+            '',
+        ],
+        [
+            { // BAGIAN SASIS TENGAH
+            content: 'BAGIAN SASIS TENGAH',
+            value: bagian_sasis_tengah,
+            },
+            '',
+            { // BAGIAN SASIS BELAKANG
+            content: 'BAGIAN SASIS BELAKANG',
+            value: bagian_sasis_belakang,
+            },
+            '',
+        ],
+        ],
+        didDrawCell: (data) => {
+        if (data.section === 'body' && data.column.index === 1) {
+            if (data.row.raw[0].value === 1) doc.addImage(base64Checked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+            else if (data.row.raw[0].value === 0) doc.addImage(base64Unchecked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+        }
+        else if (data.section === 'body' && data.column.index === 3) {
+            if (data.row.raw[2].value === 1) doc.addImage(base64Checked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+            else if (data.row.raw[2].value === 0) doc.addImage(base64Unchecked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+        }
+        },
+    });
+
+    doc.text("CATATAN: " + catatan_under_body, 15, 225);
+
+    // add new page
+    doc.addPage();
+
+    // page 3
+    // table (mesin)
+    doc.autoTable({
+        body: [
+        [{ // header
+            content: 'Mesin',
+            colSpan: 4,
+            styles: {
+            fillColor: [255, 0, 0],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold',
+            halign: 'center',
+            }
+        }],
+        [
+            { // OLI MESIN
+            content: 'OLI MESIN',
+            value: oli_mesin,
+            },
+            '',
+            { // MINYAK REM
+            content: 'MINYAK REM',
+            value: minyak_rem,
+            styles: {
+                minCellWidth: 50,
+            },
+            },
+            '',
+        ],
+        [
+            { // AIR RADIATOR
+            content: 'AIR RADIATOR',
+            value: air_radiator,
+            },
+            '',
+            { // OLI TRANSMISI AT
+            content: 'OLI TRANSMISI AT',
+            value: oli_transmisi_at,
+            },
+            '',
+        ],
+        [
+            { // MINYAK POWER STEERING
+            content: 'MINYAK POWER STEERING',
+            value: minyak_power_steering,
+            },
+            '',
+            { // AIR WIPER
+            content: 'AIR WIPER',
+            value: air_wiper,
+            },
+            '',
+        ],
+        [
+            { // SUARA MESIN NORMAL
+            content: 'SUARA MESIN NORMAL',
+            value: suara_mesin_normal,
+            },
+            '',
+            { // BELT
+            content: 'BELT',
+            value: belt,
+            },
+            '',
+        ],
+        [
+            { // ACCU
+            content: 'ACCU',
+            value: accu,
+            },
+            '',
+            { // RADIATOR
+            content: 'RADIATOR',
+            value: radiator,
+            },
+            '',
+        ],
+        [
+            { // MESIN BEBAS REMBES
+            content: 'MESIN BEBAS REMBES',
+            value: mesin_bebas_rembes,
+            },
+            '',
+            { // SELANG-SELANG
+            content: 'SELANG-SELANG',
+            value: selang_selang,
+            },
+            '',
+        ],
+        [
+            { // ASAP DAN TUTUP OLI
+            content: 'ASAP DAN TUTUP OLI',
+            value: asap_dan_tutup_oli,
+            },
+            '',
+            { // KOMPRESOR AC
+            content: 'KOMPRESOR AC',
+            value: kompresor_ac,
+            },
+            '',
+        ],
+        ],
+        didDrawCell: (data) => {
+        if (data.section === 'body' && data.column.index === 1) {
+            if (data.row.raw[0].value === 1) doc.addImage(base64Checked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+            else if (data.row.raw[0].value === 0) doc.addImage(base64Unchecked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+        }
+        else if (data.section === 'body' && data.column.index === 3) {
+            if (data.row.raw[2].value === 1) doc.addImage(base64Checked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+            else if (data.row.raw[2].value === 0) doc.addImage(base64Unchecked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+        }
+        },
+    });
+
+    doc.text("CATATAN: " + catatan_mesin, 15, 81);
+
+    // table (indikator sensor)
+    doc.autoTable({
+        startY: doc.lastAutoTable.finalY + 15,
+        body: [
+        [{ // header
+            content: 'Indikator Sensor',
+            colSpan: 4,
+            styles: {
+            fillColor: [255, 0, 0],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold',
+            halign: 'center',
+            }
+        }],
+        [
+            { // ENGINE CHECK
+            content: 'ENGINE CHECK',
+            value: sensor_engine_check,
+            styles: {
+                minCellWidth: 55,
+            },
+            },
+            '',
+            { // ABS
+            content: 'ABS',
+            value: sensor_abs,
+            },
+            '',
+        ],
+        [
+            { // REM TANGAN
+            content: 'REM TANGAN',
+            value: sensor_rem_tangan,
+            },
+            '',
+            { // TEKANAN OLI
+            content: 'TEKANAN OLI',
+            value: sensor_tekanan_oli,
+            },
+            '',
+        ],
+        [
+            { // ACCU
+            content: 'ACCU',
+            value: sensor_accu,
+            },
+            '',
+            { // VSA
+            content: 'VSA',
+            value: sensor_vsa,
+            },
+            '',
+        ],
+        [
+            { // AIRBAG
+            content: 'AIRBAG',
+            value: sensor_airbag,
+            },
+            '',
+            { // SEAT BELT
+            content: 'SEAT BELT',
+            value: sensor_seat_belt,
+            },
+            '',
+        ],
+        [
+            { // SUHU MESIN
+            content: 'SUHU MESIN',
+            value: sensor_suhu_mesin,
+            },
+            '',
+            { // ELECTRIC POWER STEERING
+            content: 'ELECTRIC POWER STEERING',
+            value: sensor_electric_power_steering,
+            },
+            '',
+        ],
+        [
+            { // DOOR LOCK
+            content: 'DOOR LOCK',
+            value: sensor_door_lock,
+            },
+            '',
+            {
+            content: '',
+            value: '',
+            },
+            ''
+        ],
+        ],
+        didDrawCell: (data) => {
+        if (data.section === 'body' && data.column.index === 1) {
+            if (data.row.raw[0].value === 1) doc.addImage(base64Checked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+            else if (data.row.raw[0].value === 0) doc.addImage(base64Unchecked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+        }
+        else if (data.section === 'body' && data.column.index === 3) {
+            if (data.row.raw[2].value === 1) doc.addImage(base64Checked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+            else if (data.row.raw[2].value === 0) doc.addImage(base64Unchecked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+        }
+        },
+    });
+
+    doc.text("CATATAN: " + catatan_sensor, 15, 149);
+
+    // table (interior depan)
+    doc.autoTable({
+        startY: doc.lastAutoTable.finalY + 15,
+        body: [
+        [{ // header
+            content: 'Interior Depan',
+            colSpan: 4,
+            styles: {
+            fillColor: [255, 0, 0],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold',
+            halign: 'center',
+            }
+        }],
+        [
+            { // KONDISI STIR
+            content: 'KONDISI STIR',
+            value: kondisi_stir,
+            },
+            '',
+            { // KLAKSON
+            content: 'KLAKSON',
+            value: klakson,
+            },
+            '',
+        ],
+        [
+            { // TOMBOL STIR
+            content: 'TOMBOL STIR',
+            value: tombol_stir,
+            },
+            '',
+            { // LAMPU SEN SPION
+            content: 'LAMPU SEN SPION',
+            value: lampu_sen_spion,
+            },
+            '',
+        ],
+        [
+            { // LAMPU DEPAN
+            content: 'LAMPU DEPAN',
+            value: lampu_depan,
+            },
+            '',
+            { // LAMPU HAZZAR
+            content: 'LAMPU HAZZAR',
+            value: lampu_hazzar,
+            },
+            '',
+        ],
+        [ 
+            { // LAMPU ATRET
+            content: 'LAMPU ATRET',
+            value: lampu_atret,
+            },
+            '',
+            { // HANDLE PINTU
+            content: 'HANDLE PINTU',
+            value: handle_pintu,
+            },
+            '',
+        ],
+        [
+            { // KONSOL BOX
+            content: 'KONSOL BOX',
+            value: konsol_box,
+            },
+            '',
+            { // SPION KANAN
+            content: 'SPION KANAN',
+            value: spion_kanan,
+            },
+            '',
+        ],
+        [ // SPION KIRI
+            {
+            content: 'SPION KIRI',
+            value: spion_kiri,
+            },
+            '',
+            { // SUN VISOR
+            content: 'SUN VISOR',
+            value: sun_visor,
+            },
+            '',
+        ],
+        [
+            { // REM TANGAN
+            content: 'REM TANGAN',
+            value: rem_tangan,
+            },
+            '',
+            { // POWER WINDOW PENUMPANG
+            content: 'POWER WINDOW PENUMPANG',
+            value: power_window_penumpang,
+            },
+            '',
+        ],
+        [
+            { // POWER WINDOW SUPIR
+            content: 'POWER WINDOW SUPIR',
+            value: power_window_supir,
+            },
+            '',
+            { // POWER WINDOW BELAKANG KIRI
+            content: 'POWER WINDOW BELAKANG KIRI',
+            value: power_window_belakang_kiri,
+            },
+            '',
+        ],
+        [
+            { // POWER WINDOW BELAKANG KANAN
+            content: 'POWER WINDOW BELAKANG KANAN',
+            value: power_window_belakang_kanan,
+            },
+            '',
+            { // PEMBUKA TANGKI BENSIN
+            content: 'PEMBUKA TANGKI BENSIN',
+            value: pembuka_tangki_bensin,
+            },
+            '',
+        ],
+        [
+            { // PEMBUKA KAP MESIN
+            content: 'PEMBUKA KAP MESIN',
+            value: pembuka_kap_mesin,
+            },
+            '',
+            { // SABUK PENGAMAN SUPIR
+            content: 'SABUK PENGAMAN SUPIR',
+            value: sabuk_pengaman_supir,
+            },
+            '',
+        ],
+        [
+            { // SABUK PENGAMAN PENUMPANG
+            content: 'SABUK PENGAMAN PENUMPANG',
+            value: sabuk_pengaman_penumpang,
+            },
+            '',
+            { // KARPET KEPING SUPIR
+            content: 'KARPET KEPING SUPIR',
+            value: karpet_keping_supir,
+            },
+            '',
+        ],
+        [
+            { // KARPET KEPING PENUMPANG
+            content: 'KARPET KEPING PENUMPANG',
+            value: karpet_keping_penumpang,
+            },
+            '',
+            { // SPION TENGAH
+            content: 'SPION TENGAH',
+            value: spion_tengah,
+            },
+            '',
+        ],
+        [
+            { // AUDIO & SPEAKER
+            content: 'AUDIO & SPEAKER',
+            value: audio_speaker,
+            },
+            '',
+            { // LAMPU PLAFON DEPAN
+            content: 'LAMPU PLAFON DEPAN',
+            value: lampu_plafon_depan,
+            },
+            '',
+        ],
+        ],
+        didDrawCell: (data) => {
+        if (data.section === 'body' && data.column.index === 1) {
+            if (data.row.raw[0].value === 1) doc.addImage(base64Checked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+            else if (data.row.raw[0].value === 0) doc.addImage(base64Unchecked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+        }
+        else if (data.section === 'body' && data.column.index === 3) {
+            if (data.row.raw[2].value === 1) doc.addImage(base64Checked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+            else if (data.row.raw[2].value === 0) doc.addImage(base64Unchecked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+        }
+        },
+    });
+
+    doc.text("CATATAN: " + catatan_interior_depan, 15, 270);
+
+    // add new page
+    doc.addPage();
+
+    // page 4
+    // table (interior belakang)
+    doc.autoTable({
+        body: [
+        [{ // header
+            content: 'Interior Belakang',
+            colSpan: 4,
+            styles: {
+            fillColor: [255, 0, 0],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold',
+            halign: 'center',
+            }
+        }],
+        [
+            { // FUNGSI AC BELAKANG
+            content: 'FUNGSI AC BELAKANG',
+            value: fungsi_ac_belakang,
+            },
+            '',
+            { // JOK BARIS BELAKANG
+            content: 'JOK BARIS BELAKANG',
+            value: jok_baris_belakang,
+            },
+            '',
+        ],
+        [
+            { // FUNGSI KURSI BARIS KEDUA
+            content: 'FUNGSI KURSI BARIS KEDUA',
+            value: fungsi_kursi_baris_kedua,
+            },
+            '',
+            { // FUNGSI KURSI BARIS KETIGA
+            content: 'FUNGSI KURSI BARIS KETIGA',
+            value: fungsi_kursi_baris_ketiga,
+            },
+            '',
+        ],
+        [
+            { // LAMPU PLAFOM BELAKANG
+            content: 'LAMPU PLAFOM BELAKANG',
+            value: lampu_plafon_belakang,
+            },
+            '',
+            { // KARPET KEPING
+            content: 'KARPET KEPING',
+            value: karpet_keping_baris_ke,
+            },
+            '',
+        ],
+        ],
+        didDrawCell: (data) => {
+        if (data.section === 'body' && data.column.index === 1) {
+            if (data.row.raw[0].value === 1) doc.addImage(base64Checked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+            else if (data.row.raw[0].value === 0) doc.addImage(base64Unchecked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+        }
+        else if (data.section === 'body' && data.column.index === 3) {
+            if (data.row.raw[2].value === 1) doc.addImage(base64Checked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+            else if (data.row.raw[2].value === 0) doc.addImage(base64Unchecked, 'PNG', data.cell.x - 10, data.cell.y + 1, 5, 5);
+        }
+        },
+    });
+
+    doc.text("CATATAN: " + catatan_interior_belakang, 15, 50);
+
+    // set name file pdf
+    doc.output("dataurlnewwindow");
+    // doc.save("test.pdf");
+}

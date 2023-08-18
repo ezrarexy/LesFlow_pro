@@ -62,7 +62,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 });
 
-Route::group(['middleware' => ['jbmid']], function () {
+Route::group(['middleware' => 'jbmid'], function () {
     
     Route::get('/spk', [pageController::class, 'SPK'])->name('spk');
 
@@ -83,9 +83,20 @@ Route::group(['middleware' => ['jbmid']], function () {
     Route::GET('/transaksi/riwayat', [pageController::class, 'RiwayatTransaksi']);
 
     Route::GET('/mobil', [pageController::class, 'ListMobil']);
+
+    Route::get('/prospek', [pageController::class, 'Prospek'])->name('prospek');
+
+    Route::get('/reminder/hut', [pageController::class, 'Reminder1']);
+
+    Route::get('/reminder/raya', [pageController::class, 'Reminder2']);
+
+    Route::get('/reminder/pajak', [pageController::class, 'Reminder3']);
+
+    Route::get('/reminder/kredit', [pageController::class, 'Reminder4']);
+
 });
 
-Route::group(['middleware' => ['manager']], function () {
+Route::group(['middleware' => 'manager'], function () {
     Route::get('/konfirmasi/jual', [pageController::class, 'KonfJual'])->name('konfJual');
 
     Route::get('/konfirmasi/beli', [pageController::class, 'KonfBeli'])->name('konfBeli');
@@ -114,9 +125,13 @@ Route::group(['middleware' => ['manager']], function () {
 
     Route::DELETE('/asuransi/rm', [ManagerController::class, 'AsuransiRm']);
 
+    Route::GET('/raya', [pageController::class, 'HariRaya']);
+
+    Route::POST('/raya/add', [ManagerController::class, 'RayaAdd']);
+
 });
 
-Route::group(['middleware' => [ 'admin']], function () {
+Route::group(['middleware' => 'admin'], function () {
 
     Route::POST('/dokumen/put', [Controller::class, 'PutDokumen']);
 
@@ -124,7 +139,7 @@ Route::group(['middleware' => [ 'admin']], function () {
 
 });
 
-Route::group(['middleware' => ['finance']], function () {
+Route::group(['middleware' => 'finance'], function () {
 
     Route::get('/listspk', [pageController::class, 'listSPK'])->name('listspk');
 
@@ -144,11 +159,17 @@ Route::group(['middleware' => ['finance']], function () {
 
     Route::POST('/spk/uangMobil2', [FinanceController::class, 'KwitansiMobil2'])->name('uangMobil2');
 
+    Route::GET('/finance/sell',[pageController::class, 'FinanceSell']);
+
+    Route::GET('/finance/buy',[pageController::class, 'FinanceBuy']);
+
+    Route::GET('/finance/report',[pageController::class, 'Keuangan']);
+
+    Route::GET('/finance/report/get',[FinanceController::class, 'Keuangan']);
+
 });
 
-Route::group(['middleware' => ['sales']], function () {
-    Route::get('/prospek', [pageController::class, 'Prospek'])->name('prospek');
-
+Route::group(['middleware' => 'sales'], function () {
 });
 
 Route::group(['middleware' => 'ops'], function () {

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agama;
 use App\Models\Asuransi;
 use App\Models\Bengkel;
 use App\Models\Customer;
 use App\Models\detail_perbaikan;
 use App\Models\DetailQc;
+use App\Models\HariRaya;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\User;
@@ -73,6 +75,52 @@ class pageController extends Controller
     }
 
 
+
+    // ================================= Reminder Page Controller ===============================================
+    
+        public function Reminder1() {
+            $pej = $this->PageObj("Ulang Tahun","/reminder/hut");
+            $notif = $this->UserNotif();
+
+            $data = $this->Ultah(1);
+
+
+
+            return view('reminder1')->with('pej',$pej)->with('notif',$notif)->with('data',$data);
+        }
+
+        public function Reminder2() {
+            $pej = $this->PageObj("Hari Raya","/reminder/raya");
+            $notif = $this->UserNotif();
+
+            $data = $this->Raya(1);
+
+            return view('reminder2')->with('pej',$pej)->with('notif',$notif)->with('data',$data);
+        }
+
+        public function Reminder3() {
+            $pej = $this->PageObj("Pajak","/reminder/pajak");
+            $notif = $this->UserNotif();
+
+            $data = $this->Pajak(1);
+
+
+            return view('reminder3')->with('pej',$pej)->with('notif',$notif)->with('data',$data);
+        }
+
+        public function Reminder4() {
+            $pej = $this->PageObj("Kredit Selesai","/reminder/kredit");
+            $notif = $this->UserNotif();
+
+            $data = $this->Kredit(1);
+
+
+
+            return view('reminder4')->with('pej',$pej)->with('notif',$notif)->with('data',$data);
+        }
+
+    // ============================================================================================================
+
     // ================================== Sales ==================================
 
         public function Prospek() {
@@ -99,8 +147,6 @@ class pageController extends Controller
     // ===========================================================================
 
 
-
-
     // ================================== Jual - Beli =============================
 
 
@@ -118,7 +164,7 @@ class pageController extends Controller
             ->orwhere('transaksi_juals.node','=',6)
             ->orwhere('transaksi_juals.node','=',7)->get();
 
-            return view('listSPK')->with('pej',$pej)->with('notif',$notif)->with('prospek',$spk);
+            return view('listSPK')->with('pej',$pej)->with('notif',$notif)->with('spk',$spk);
 
         }
 
@@ -187,8 +233,6 @@ class pageController extends Controller
     // ============================================================================
 
 
-
-
     // ================================== Keuangan ================================
         public function PayB() {
 
@@ -226,10 +270,57 @@ class pageController extends Controller
         }
 
 
+        public function FinanceSell(Request $req) {
+            $pej = $this->PageObj("Riwayat Penjualan","/finance/sell");
+            $notif = $this->UserNotif();
+
+            $data = transaksiJual::select(
+                'transaksi_juals.*',
+                'customers.nama as pembeli',
+                'users.nama as penjual',
+                'transaksi_juals.updated_at as tanggal_jual',
+                'mobils.nama as type',
+                'merks.nama as merk',
+                'spks.harga_jadi')
+            ->join('mobils','transaksi_juals.id_mobil','mobils.id')
+            ->join('customers','transaksi_juals.id_customer','customers.id')
+            ->join('users','transaksi_juals.id_sales','users.id')
+            ->join('merks','mobils.id_merk','merks.id')
+            ->join('spks','transaksi_juals.id_spk','spks.id')
+            ->where('transaksi_juals.node',8)->get();
+
+            return view('layouts.keuangan.histSell')->with('pej',$pej)->with('notif',$notif)->with('data',$data);
+        }
+
+        public function FinanceBuy(Request $req) {
+            $pej = $this->PageObj("Riwayat Pembelian","/finance/buy");
+            $notif = $this->UserNotif();
+
+            $data = transaksiBeli::select(
+                'transaksi_belis.updated_at as tanggal_beli',
+                'transaksi_belis.nama as penjual',
+                'mobils.*',
+                'mobils.nama as type',
+                'merks.nama as merk'
+            )
+            ->join('mobils','transaksi_belis.id_mobil','mobils.id')
+            ->join('merks','mobils.id_merk','merks.id')
+            ->where('transaksi_belis.node',3)
+            ->get();
+
+            return view('layouts.keuangan.histBuy')->with('pej',$pej)->with('notif',$notif)->with('data',$data);
+        }
+
+        public function Keuangan(Request $req) {
+            $pej = $this->PageObj("Laporan Keuangan","/finance/report");
+            $notif = $this->UserNotif();
+
+            return view('layouts.keuangan.report')->with('pej',$pej)->with('notif',$notif);
+        }
+
+
     // ============================================================================
     
-
-
 
     // ================================= OPS ========================================
         public function PeriksaMasuk() {
@@ -374,8 +465,6 @@ class pageController extends Controller
     // ==============================================================================
 
 
-
-
     // =============================== Manager ==========================================
 
         public function KonfJual() {
@@ -429,6 +518,17 @@ class pageController extends Controller
             return view('layouts.manager.asuransi')->with('pej',$pej)->with('notif',$notif)->with('data',$asuransi);
         }
 
+        public function HariRaya() {
+            $pej = $this->PageObj("Manage Hari Raya","/raya");
+            $notif = $this->UserNotif();
+
+            $data = HariRaya::select('hari_rayas.*', 'agamas.nama as agama')->join('agamas','hari_rayas.id_agama','agamas.id')->get();
+
+            $agama = Agama::all();
+
+            return view('layouts.manager.raya')->with('pej',$pej)->with('notif',$notif)->with('data',$data)->with('agama',$agama);
+        }
+
     // ==================================================================================
 
 
@@ -451,10 +551,10 @@ class pageController extends Controller
                     $notif = $this->notifFinance();
                     break;
                 case 4:
-                    # code...
+                    $notif = $this->notifAdmin();
                     break;
                 case 5:
-                    # code...
+                    $notif = $this->notifSales();
                     break;
                 case 6:
                     $notif = $this->notifOPS();
@@ -514,6 +614,40 @@ class pageController extends Controller
                 $not->status = false;
                 $not->notif = "";
             }
+
+            $not->reminder = app()->make('stdClass');
+            $not->reminder->hut = $this->Ultah(0);
+            $not->reminder->raya = $this->Raya(0);
+            $not->reminder->pajak = $this->Pajak(0);
+            $not->reminder->kredit = $this->Kredit(0);
+
+            return $not;
+        }
+
+        public function notifAdmin() {
+            $not = app()->make('stdClass');
+
+            $not->status = false;
+
+            $not->reminder = app()->make('stdClass');
+            $not->reminder->hut = $this->Ultah(0);
+            $not->reminder->raya = $this->Raya(0);
+            $not->reminder->pajak = $this->Pajak(0);
+            $not->reminder->kredit = $this->Kredit(0);
+
+            return $not;
+        }
+
+        public function notifSales() {
+            $not = app()->make('stdClass');
+
+            $not->status = false;
+
+            $not->reminder = app()->make('stdClass');
+            $not->reminder->hut = $this->Ultah(0);
+            $not->reminder->raya = $this->Raya(0);
+            $not->reminder->pajak = $this->Pajak(0);
+            $not->reminder->kredit = $this->Kredit(0);
 
             return $not;
         }
@@ -593,4 +727,161 @@ class pageController extends Controller
             return $not;
         }
     // ===================================================================================================================
+
+
+
+    //================================ Fungsi Lainnya ======================================
+
+
+        public function Ultah($x) {
+
+            if ($x==1) {
+                $data = Customer::whereMonth('dob', Carbon::now()->format('m'))->whereDay('dob', Carbon::now()->format('d'))->get();
+
+                foreach ($data as $k => $v) {
+                    $data[$k]->umur = Carbon::parse($v->dob)->diffInYears(Carbon::now());
+                }
+            }
+            else $data = Customer::whereMonth('dob', Carbon::now()->format('m'))->whereDay('dob', Carbon::now()->format('d'))->count();
+
+            return $data;
+        }
+
+        public function Raya($x) {
+
+            if ($x == 1) {
+                $data = Customer::select(
+                'customers.nama','customers.telp','customers.instagram','customers.facebook',
+                'agamas.nama as agama',
+                'hari_rayas.nama as raya'
+                )
+                ->join('agamas','customers.id_agama','agamas.id')
+                ->join('hari_rayas','customers.id_agama','hari_rayas.id_agama')
+                ->whereDate('tanggal',Carbon::now())->get();
+            } else {
+                $data = Customer::select(
+                'customers.nama','customers.telp','customers.instagram','customers.facebook',
+                'agamas.nama as agama',
+                'hari_rayas.nama as raya'
+                )
+                ->join('agamas','customers.id_agama','agamas.id')
+                ->join('hari_rayas','customers.id_agama','hari_rayas.id_agama')
+                ->whereDate('tanggal',Carbon::now())->count();
+            }
+
+            return $data;
+        }
+
+        public function Pajak($x) {
+            
+            if ( $x==1 ) {
+
+
+                // Ambil tanggal sekarang
+                $sekarang = Carbon::now();
+
+                $data = [];
+                $i = 0;
+
+                $mobil = Mobil::all();
+
+                foreach ($mobil as $k => $v) {
+                    if ( (Carbon::parse($v->jt_pkb) >= $sekarang && Carbon::parse($v->jt_pkb)->diffInDays($sekarang) <= 14) || (Carbon::parse($v->jt_pkb) >= $sekarang && Carbon::parse($v->jt_stnk)->diffInDays($sekarang) <= 14)  ) {
+                        if ($v->id_pemilik !== null) {
+                            $pemilik = Customer::select(
+                                'customers.nama','customers.telp','customers.instagram','customers.facebook'
+                            )->where('id',$v->id_pemilik)->first();
+                            $mobil[$k]->nama_pemilik = $pemilik->nama;
+                            $mobil[$k]->telp = $pemilik->telp;
+                            $mobil[$k]->instagram = $pemilik->instagram;
+                            $mobil[$k]->facebook = $pemilik->facebook;
+                        }
+                        $merk = Merk::find($v->id_merk);
+                        $mobil[$k]->merk = $merk->nama;
+                        $data[$i] = $mobil[$k];
+                        $data[$i]->sisa_hari_jt_pkb = Carbon::parse($v->jt_pkb)->diffInDays($sekarang);
+                        $data[$i]->sisa_hari_jt_stnk = Carbon::parse($v->jt_stnk)->diffInDays($sekarang);
+                        $i++;
+                    }
+                }
+                
+
+            } else {
+                // Ambil tanggal sekarang
+                $sekarang = Carbon::now();
+
+                $data = 0;
+
+                $mobil = Mobil::all();
+
+                foreach ($mobil as $k => $v) {
+                    if ( (Carbon::parse($v->jt_pkb) >= $sekarang && Carbon::parse($v->jt_pkb)->diffInDays($sekarang) <= 14) || (Carbon::parse($v->jt_pkb) >= $sekarang && Carbon::parse($v->jt_stnk)->diffInDays($sekarang) <= 14)  ) {
+                        $data++;
+                    }
+                }
+            }
+
+
+            return $data;
+        }
+
+        public function Kredit($x) {
+
+
+            if ($x == 1) {
+                $data = [];
+
+                $spk = SPK::select(
+                    'spks.jt_pembayaran_kredit','spks.tenor',
+                    'customers.nama', 'customers.telp', 'customers.instagram', 'customers.facebook',
+                    'mobils.nama as type', 'mobils.nomor_polisi', 'mobils.tahun',
+                    'merks.nama as merk'
+                )
+                ->join('customers','spks.id_customer','customers.id')
+                ->join('mobils','spks.id_mobil','mobils.id')
+                ->join('merks','mobils.id_merk','merks.id')
+                ->where('spks.id_jenis_pembayaran', 2)->get();
+
+                foreach ($spk as $k => $v) {
+                    $mulai = Carbon::parse($v->jt_pembayaran_kredit);
+                    $endDate = $mulai->addMonths($v->tenor);
+
+                    $tanggal = Carbon::parse($endDate);
+
+                    $selisihHari = $tanggal->diffInDays(Carbon::today());
+
+                    $spk[$k]->sisa_hari = $selisihHari;
+
+                    if ($selisihHari <= 30) {
+                        array_push($data,$spk[$k]);
+                    }
+                }
+            } else {
+                $data = 0;
+                
+                $spk = SPK::where('id_jenis_pembayaran', 2)->get();
+
+                foreach ($spk as $k => $v) {
+                    $mulai = Carbon::parse($v->jt_pembayaran_kredit);
+                    $endDate = $mulai->addMonths($v->tenor);
+
+                    $tanggal = Carbon::parse($endDate);
+
+                    $selisihHari = $tanggal->diffInDays(Carbon::today());
+
+                    $spk[$k]->sisa_hari = $selisihHari;
+
+                    if ($selisihHari <= 30) {
+                        $data++;
+                    }
+                }
+
+            }
+
+            return $data;
+        }
+
+
+    // ===================================================================================================================
+
 }

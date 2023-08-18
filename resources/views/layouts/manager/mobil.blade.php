@@ -801,8 +801,11 @@
             $('.harga').number(true,0);
             $('#iBottom').number(true,0);
             $('#iHjual').number(true,0);
-            
 
+        });
+
+        $('#iBottom, iHjual').on('keyup', function (e) {
+            $(this).number(true,0);
         });
 
         $(document).on('click', '[data-toggle="lightbox"]', function(event) {

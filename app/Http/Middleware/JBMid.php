@@ -16,6 +16,10 @@ class JBMid
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Anda harus login untuk mengakses halaman ini.');
+        }
+
         $user = Auth::user();
 
         if ($user->id_role !== 2 && $user->id_role !== 4 && $user->id_role !== 5) {

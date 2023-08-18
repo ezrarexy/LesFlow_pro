@@ -748,7 +748,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="iBiaya">Estimasi Biaya</label>
-                            <input type="text" class="form-control border" name="est_biaya" id="iBiaya">
+                            <input type="text" class="form-control border harga" name="est_biaya" id="iBiaya">
                         </div>
                         <div class="mb-3">
                             <label for="tanggal_masuk">Tanggal Masuk</label>
@@ -834,7 +834,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.8/ScrollMagic.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.8/plugins/animation.gsap.min.js"></script>
-    
+    <script src="{{asset('assets/vendor/jquery/jquery.number.min.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
 
     <script>
@@ -847,6 +847,10 @@
 
             $('#table1').DataTable();
 
+        });
+
+        $('.harga').on('keyup', function () {
+            $('.harga').number(true,0);
         });
 
         $('#iJenis').on('change',() => {

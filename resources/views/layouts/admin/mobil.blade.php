@@ -762,6 +762,7 @@
     <script src="{{asset('assets/vendor/jquery/jquery.number.min.js')}}"></script>
     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
 
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.8/ScrollMagic.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.8/plugins/animation.gsap.min.js"></script>
@@ -786,11 +787,14 @@
 
             $('#tableMobil').DataTable(); 
             $('.harga').number(true,0);
-            $('#iBottom').number(true,0);
-            $('#iHjual').number(true,0);
-            
 
         });
+
+        $('#iBottom, iHjual').on('keyup', function (e) {
+            $(this).number(true,0);
+        });
+
+        
 
         $(document).on('click', '[data-toggle="lightbox"]', function(event) {
             event.preventDefault();

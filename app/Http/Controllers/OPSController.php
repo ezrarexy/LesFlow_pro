@@ -306,6 +306,7 @@ class OPSController extends Controller
         $jual = transaksiJual::find($req->input('id'));
         $bast = bast::find($jual->id_bast);
         $cust = Customer::find($jual->id_customer);
+        $mobil = Mobil::find($jual->id_mobil);
 
         // Mengambil file gambar
         if ($req->hasFile('foto')) {
@@ -324,7 +325,8 @@ class OPSController extends Controller
 
         $bast->foto = $imageName;
         $jual->node = 8;
-
+        $mobil->state = 8;
+        $mobil->id_pemilik = $jual->id_customer;
         
 
         if ($cust->state==0) {
@@ -338,6 +340,7 @@ class OPSController extends Controller
                 $bast->save();
                 $jual->save();
                 $cust->save();
+                $mobil->save();
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();

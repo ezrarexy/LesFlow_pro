@@ -872,7 +872,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-target="#modalJual2" data-bs-toggle="modal">Batal</button>
-            <button type="button" class="btn btn-primary">Proses</button>
+            <button type="button" class="btn btn-primary" onclick="askBottom()">Proses</button>
         </div>
         </div>
     </div>
@@ -923,6 +923,10 @@
             $('#iHarga').number(true,0);
             
 
+        });
+
+        $('.iHarga, #iBottom, iHjual').on('keyup', function (e) {
+            $(this).number(true,0);
         });
 
         function hasilQC(qc) {
@@ -1210,7 +1214,8 @@
                     dataType: "json",
                     success: function (response) {
                     if (response.status) {
-                        toastr.success("   ");
+                        toastr.success("Transaksi telah diajukan!");
+                        $(".modal").modal("hide");
                     } else {
                         toastr.error(response.res);
                     }

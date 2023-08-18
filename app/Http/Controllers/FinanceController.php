@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\detail_perbaikan;
 use App\Models\kwitansi;
 use App\Models\transaksiBeli;
 use App\Models\Mobil;
@@ -143,7 +144,7 @@ class FinanceController extends Controller
 
         $data = Mobil::select('mobils.*','mobils.nama as type','merks.nama as merk')->join('merks','mobils.id_merk','=','merks.id')->where('mobils.id',$jual->id_mobil)->first();
 
-        $data->harga_jadi = "";
+        $data->uang_spk = $req->harga_jadi;
 
         try {
             DB::beginTransaction();
@@ -168,8 +169,6 @@ class FinanceController extends Controller
 
                 $spk = Spk::find($jual->id_spk);
                 $spk->id_kwitansi_uang_spk = $id_kwitnsi;
-
-                $data->harga_jadi = $spk->harga_jadi;
 
                 $spk->save();
 
@@ -326,6 +325,44 @@ class FinanceController extends Controller
         
         
         return response(['status'=>'success','data'=>$data]);
+    }
+
+
+    public function Keuangan(Request $req) {
+        $x = $req->x;
+        $y = $req->y;
+
+        $data = app()->make('stdClass');
+        $data->expenses = app()->make('stdClass');
+        $data->income = app()->make('stdClass');
+
+
+        $dx = transaksiBeli::where('node',3)->whereBetween('updated_at', [$x, $y])->get();
+        $dy = detail_perbaikan::where('node',1)->whereBetween('updated_at', [$x, $y])->get();
+        $dz = transaksiJual::select('transaksi_juals.*', 'spks.harga_jadi')->join('spks','transaksi_juals.id_spk','spks.id')->where('transaksi_juals.node',8)->whereBetween('transaksi_juals.updated_at', [$x, $y])->get();
+
+        
+        $tempx = 0;
+        $tempy = 0;
+        $tempz = 0;
+
+        foreach ($dx as $k => $v) {
+            $tempx += $v->harga;
+        }
+        foreach ($dy as $k => $v) {
+            $tempy += $v->est_biaya;
+        }
+        foreach ($dz as $k => $v) {
+            $tempz += $v->harga_jadi;
+        }
+
+
+        $data->expenses->beli = $tempx;
+        $data->expenses->bengkel = $tempy;
+        $data->income->jual = $tempz;
+
+
+        return response(['status'=>'success','res'=>$data]);
     }
 
 }

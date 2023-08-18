@@ -38,7 +38,6 @@
     <link href="{{ asset('assets/css/nucleo-svg.css')}}" rel="stylesheet" />
 
 
-
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 

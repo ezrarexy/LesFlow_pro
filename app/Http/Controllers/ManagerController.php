@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Asuransi;
 use App\Models\Bengkel;
+use App\Models\HariRaya;
 use App\Models\Mobil;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -29,6 +30,27 @@ class ManagerController extends Controller
         try {
             DB::beginTransaction();
                 $user->save();
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response(['status'=>'fail','res'=>$e]);
+        }
+
+        return response(['status'=>'success']);
+    }
+
+    public function RayaAdd(Request $req) {
+        
+        $raya = new HariRaya();
+
+        $raya->nama = $req->nama;
+        $raya->id_agama = $req->id_agama;
+        $raya->tanggal = $req->tanggal;
+        
+
+        try {
+            DB::beginTransaction();
+                $raya->save();
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
